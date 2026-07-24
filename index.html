@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>神明客服中心｜開場</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%98%8E%EF%B8%8F%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <div id="game">
+
+    <!-- ① Scene / Background -->
+    <div id="scene">
+      <div id="bg-layer" class="bg-black"></div>
+      <div id="bg-overlay"></div>
+      <div id="deco-layer"></div>
+      <div id="light-flash"></div>
+      <div id="paper-wipe"></div>
+    </div>
+
+    <!-- ③ Interaction Layer (hotspots / character gallery / call record) -->
+    <div id="interaction-layer"></div>
+
+    <!-- HUD -->
+    <div id="hud">
+      <button id="mute-btn" title="靜音／取消靜音">🔊</button>
+      <div id="save-indicator">已自動儲存</div>
+    </div>
+
+    <!-- ② Dialogue Box -->
+    <div id="dialogue-box" class="hidden">
+      <div id="speaker-name"></div>
+      <div id="dialogue-text"></div>
+      <div id="advance-hint">▼</div>
+    </div>
+
+    <!-- ④ Choice UI -->
+    <div id="choice-layer" class="hidden"></div>
+
+    <!-- Item / Info Modal -->
+    <div id="modal-layer" class="hidden">
+      <div id="modal-box">
+        <div id="modal-title"></div>
+        <div id="modal-body"></div>
+        <div id="modal-nav">
+          <button id="modal-prev">◀ 上一頁</button>
+          <span id="modal-page"></span>
+          <button id="modal-next">下一頁 ▶</button>
+        </div>
+        <button id="modal-close">關閉</button>
+      </div>
+    </div>
+
+    <!-- Title Screen -->
+    <div id="title-screen">
+      <h1 id="title-logo">神明客服中心</h1>
+      <p id="title-sub">Divine Customer Service Center</p>
+      <div id="title-buttons">
+        <button id="btn-new-game">開始遊戲</button>
+        <button id="btn-continue" class="hidden">繼續遊戲</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
