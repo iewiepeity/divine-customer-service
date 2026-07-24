@@ -1,0 +1,2005 @@
+<meta charset="UTF-8" />
+<title>神明客服中心｜開場</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<style>
+/* ============================================================
+   神明客服中心 - 開場互動系統
+   Visual Novel Engine Stylesheet
+   Palette: 夢幻粉嫩 (dreamy pastel pink)
+   ============================================================ */
+
+:root {
+  --pink: #ff8fc0;
+  --pink-bright: #ffd9ec;
+  --pink-soft: #ffc2e0;
+  --lavender: #c7b3ff;
+  --mint: #a8f0cf;
+  --peach: #ffcfa8;
+  --ink: #1a0f22;
+  --paper: #fff2f8;
+  --ui-bg: rgba(48, 22, 46, 0.85);
+  --ui-border: rgba(255, 173, 214, 0.6);
+  --danger: #ff8a9a;
+  --font-serif: "Noto Serif TC", "PMingLiU", "Songti TC", serif;
+  --font-sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#game {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ---------------------------------------------------------- */
+/* ① Scene / Background                                       */
+/* ---------------------------------------------------------- */
+
+#scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+#bg-layer {
+  position: absolute;
+  inset: -6%;
+  width: 112%;
+  height: 112%;
+  transition: transform 1.4s ease, opacity 1.1s ease, filter 1.1s ease;
+  background-size: cover;
+  background-position: center;
+}
+
+#bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0);
+  transition: background 1.1s ease;
+  pointer-events: none;
+}
+
+#deco-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+#bg-layer.zoom { transform: scale(1.08); }
+
+/* Scene palettes (drawn with CSS gradients — no external art needed) */
+
+.bg-black {
+  background: radial-gradient(ellipse at center, #0a0510 0%, #000000 100%);
+}
+
+.bg-void {
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(255,214,235,0.4) 0%, rgba(255,214,235,0.06) 35%, transparent 60%),
+    radial-gradient(ellipse at center, #241730 0%, #0c0712 100%);
+}
+
+.bg-office {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.55) 100%),
+    radial-gradient(ellipse at 50% 20%, rgba(255,190,220,0.18) 0%, transparent 55%),
+    linear-gradient(160deg, #3a2c34 0%, #241722 45%, #150d16 100%);
+}
+
+.bg-heaven {
+  background:
+    radial-gradient(ellipse at 50% 10%, rgba(255,201,230,0.6) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 100%, #6a4a8e 0%, transparent 60%),
+    linear-gradient(180deg, #b98fd1 0%, #6b4a92 45%, #2a1c44 100%);
+}
+
+.bg-heaven-alert {
+  background:
+    radial-gradient(ellipse at 50% 15%, rgba(255,150,170,0.45) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 100%, #6a4a8e 0%, transparent 60%),
+    linear-gradient(180deg, #b98fd1 0%, #6b4a92 45%, #2a1c44 100%);
+}
+
+.bg-spotlight {
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255,214,235,0.65) 0%, rgba(255,214,235,0.1) 30%, transparent 55%),
+    linear-gradient(180deg, #241830 0%, #0f0916 100%);
+}
+
+.bg-case {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.5)),
+    radial-gradient(ellipse at 50% 0%, rgba(190,170,255,0.35) 0%, transparent 55%),
+    linear-gradient(160deg, #322d54 0%, #201c38 60%, #100e1e 100%);
+}
+
+/* Light flash (transition style: Light Fade) */
+#light-flash {
+  position: absolute;
+  inset: 0;
+  background: #fff0f8;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 40;
+}
+#light-flash.flash {
+  animation: lightFlash 0.9s ease;
+}
+@keyframes lightFlash {
+  0% { opacity: 0; }
+  35% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Paper transition (wipe) */
+#paper-wipe {
+  position: absolute;
+  inset: 0;
+  background: var(--paper);
+  transform: translateX(-100%);
+  pointer-events: none;
+  z-index: 41;
+  box-shadow: 8px 0 30px rgba(0,0,0,0.4);
+}
+#paper-wipe.wipe {
+  animation: paperWipe 1s ease;
+}
+@keyframes paperWipe {
+  0% { transform: translateX(-105%); }
+  50% { transform: translateX(0%); }
+  100% { transform: translateX(105%); }
+}
+
+/* Generic fade veil for scene swaps */
+#bg-overlay.fade-out { background: rgba(0,0,0,1); }
+
+/* ---------------------------------------------------------- */
+/* Ambient decorative elements                                 */
+/* ---------------------------------------------------------- */
+
+.deco {
+  position: absolute;
+  pointer-events: none;
+}
+
+.desk-shape {
+  position: absolute;
+  bottom: 6%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(78vw, 900px);
+  height: 30%;
+  background: linear-gradient(180deg, #7a5c68 0%, #4a3540 100%);
+  border-radius: 10px 10px 4px 4px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 2px 0 rgba(255,255,255,0.08);
+}
+
+.desk-shape::before {
+  content: "";
+  position: absolute;
+  top: -14px;
+  left: -3%;
+  width: 106%;
+  height: 18px;
+  background: #8f6c7a;
+  border-radius: 6px;
+}
+
+.throne-glow {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 46vw;
+  max-width: 520px;
+  aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(255,214,235,0.55) 0%, rgba(255,214,235,0.0) 70%);
+  filter: blur(2px);
+}
+
+.god-figure {
+  position: absolute;
+  bottom: 14%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(38vw, 340px);
+  height: 46%;
+  background: linear-gradient(180deg, #ffd9ec 0%, #d8aaf0 45%, #a76fd1 100%);
+  clip-path: polygon(50% 0%, 78% 10%, 92% 40%, 82% 100%, 18% 100%, 8% 40%, 22% 10%);
+  box-shadow: 0 0 80px rgba(255,201,230,0.5);
+}
+
+.scroll-shape {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(60vw, 560px);
+  height: 22%;
+  background: linear-gradient(180deg, #fff0f7 0%, #f3cfe4 100%);
+  border-radius: 12px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+.spirit-column {
+  position: absolute;
+  bottom: 12%;
+  width: 12vw;
+  max-width: 140px;
+  height: 50%;
+  border-radius: 50% 50% 20% 20%;
+  box-shadow: 0 0 60px currentColor;
+  opacity: 0;
+  transform: translateY(30px) scale(0.7);
+  transition: opacity 1s ease, transform 1s ease;
+}
+.spirit-column.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.spirit-1 { left: 24%; color: rgba(255,180,190,0.55); background: linear-gradient(180deg, rgba(255,209,217,0.85), rgba(255,143,163,0.3)); }
+.spirit-2 { left: 50%; transform: translate(-50%, 30px) scale(0.7); color: rgba(190,180,255,0.55); background: linear-gradient(180deg, rgba(214,200,255,0.85), rgba(155,138,224,0.3)); }
+.spirit-2.show { transform: translate(-50%, 0) scale(1); }
+.spirit-3 { right: 24%; left: auto; color: rgba(170,240,210,0.5); background: linear-gradient(180deg, rgba(200,255,230,0.85), rgba(127,224,184,0.3)); }
+
+.phone-case-shape {
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(70vw, 620px);
+  height: 26%;
+  background: linear-gradient(180deg, #4a3f6e 0%, #241f3d 100%);
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+
+/* ---------------------------------------------------------- */
+/* ③ Interaction Layer                                        */
+/* ---------------------------------------------------------- */
+
+#interaction-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.hotspot {
+  position: absolute;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  animation: hotspotPulse 2.4s ease-in-out infinite;
+}
+
+.hotspot .icon {
+  font-size: clamp(28px, 4vw, 44px);
+  width: 1.7em;
+  height: 1.7em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 143, 192, 0.18);
+  border: 2px solid var(--ui-border);
+  box-shadow: 0 0 18px rgba(255,143,192,0.35);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.hotspot .label {
+  font-size: 13px;
+  color: var(--pink-bright);
+  background: rgba(40,16,36,0.6);
+  padding: 2px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.hotspot:hover .icon { transform: scale(1.12); background: rgba(255,143,192,0.32); }
+
+.hotspot.visited {
+  opacity: 0.4;
+  animation: none;
+}
+.hotspot.visited .icon { box-shadow: none; }
+
+@keyframes hotspotPulse {
+  0%, 100% { filter: drop-shadow(0 0 2px rgba(255,143,192,0.2)); }
+  50% { filter: drop-shadow(0 0 10px rgba(255,143,192,0.6)); }
+}
+
+#explore-continue {
+  position: absolute;
+  left: 50%;
+  bottom: 14%;
+  transform: translate(-50%, 20px);
+  pointer-events: auto;
+  padding: 12px 34px;
+  font-size: 16px;
+  letter-spacing: 4px;
+  background: linear-gradient(180deg, var(--pink-bright), var(--pink));
+  color: #4a1338;
+  border: none;
+  border-radius: 30px;
+  font-weight: 700;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  box-shadow: 0 8px 24px rgba(255,143,192,0.4);
+}
+#explore-continue.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+#explore-continue:hover { filter: brightness(1.08); }
+
+.progress-badge {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  color: var(--pink-bright);
+  font-size: 13px;
+  letter-spacing: 2px;
+  background: rgba(40,16,36,0.55);
+  padding: 6px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--ui-border);
+}
+
+/* Character gallery cards */
+.char-slot {
+  position: absolute;
+  bottom: 6%;
+  width: 20vw;
+  min-width: 150px;
+  max-width: 220px;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+  cursor: pointer;
+  text-align: center;
+}
+.char-slot .char-figure {
+  width: 100%;
+  aspect-ratio: 3/5;
+  border-radius: 14px 14px 30% 30%;
+  box-shadow: 0 0 40px currentColor;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  opacity: 0;
+  transform: translateY(24px) scale(0.85);
+}
+.char-slot.show .char-figure {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.char-slot:hover .char-figure { transform: translateY(-6px) scale(1.04); }
+.char-slot .char-tag {
+  margin-top: 10px;
+  color: var(--pink-bright);
+  font-size: 14px;
+  letter-spacing: 3px;
+  opacity: 0;
+  transition: opacity 0.6s ease 0.2s;
+}
+.char-slot.show .char-tag { opacity: 1; }
+
+.char-1 { left: 24%; color: rgba(255,180,190,0.9); background: linear-gradient(160deg, #ffd1d9, #ff8fa3); }
+.char-2 { left: 50%; color: rgba(190,180,255,0.9); background: linear-gradient(160deg, #d6c8ff, #9b8ae0); }
+.char-3 { left: 76%; color: rgba(170,240,210,0.9); background: linear-gradient(160deg, #c8ffe6, #7fe0b8); }
+
+/* Call record paging widget */
+#record-panel {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(560px, 86vw);
+  background: linear-gradient(180deg, #fff2f8, #f6cfe5);
+  color: #5a1e46;
+  border-radius: 10px;
+  padding: 26px 30px;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.6);
+  pointer-events: auto;
+  font-family: var(--font-serif);
+}
+#record-panel h3 {
+  margin: 0 0 14px;
+  font-size: 15px;
+  letter-spacing: 4px;
+  color: #b0508a;
+  border-bottom: 1px dashed #d998bd60;
+  padding-bottom: 10px;
+}
+#record-fields { min-height: 130px; }
+.record-field {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 4px;
+  border-bottom: 1px solid rgba(176,80,138,0.18);
+  font-size: 15px;
+  opacity: 0;
+  transform: translateX(-8px);
+  animation: fieldIn 0.5s ease forwards;
+}
+@keyframes fieldIn { to { opacity: 1; transform: translateX(0); } }
+.record-field .val { font-weight: 700; color: #d64577; }
+#record-next {
+  margin-top: 16px;
+  width: 100%;
+  padding: 10px;
+  background: #d16b9e;
+  color: #fff2f8;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  letter-spacing: 2px;
+  cursor: pointer;
+}
+#record-next:hover { filter: brightness(1.1); }
+#record-hint {
+  text-align: center;
+  color: var(--pink-bright);
+  font-size: 13px;
+  letter-spacing: 2px;
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ---------------------------------------------------------- */
+/* HUD                                                          */
+/* ---------------------------------------------------------- */
+
+#hud {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#mute-btn {
+  background: rgba(40,16,36,0.5);
+  border: 1px solid var(--ui-border);
+  color: var(--pink-bright);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  font-size: 16px;
+}
+#save-indicator {
+  color: var(--pink-bright);
+  font-size: 12px;
+  background: rgba(40,16,36,0.5);
+  border: 1px solid var(--ui-border);
+  padding: 6px 12px;
+  border-radius: 12px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+#save-indicator.show { opacity: 1; }
+
+/* ---------------------------------------------------------- */
+/* ② Dialogue Box                                              */
+/* ---------------------------------------------------------- */
+
+#dialogue-box {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  width: min(880px, 92vw);
+  min-height: 130px;
+  background: var(--ui-bg);
+  border: 1px solid var(--ui-border);
+  border-radius: 14px;
+  padding: 20px 28px 26px;
+  z-index: 50;
+  cursor: pointer;
+  backdrop-filter: blur(2px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+#dialogue-box.hidden { opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(10px); }
+
+#speaker-name {
+  position: absolute;
+  top: -16px;
+  left: 24px;
+  background: linear-gradient(180deg, var(--pink-bright), var(--pink));
+  color: #4a1338;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 4px 16px;
+  border-radius: 12px;
+  letter-spacing: 2px;
+  display: none;
+}
+#speaker-name.show { display: block; }
+
+#dialogue-text {
+  font-family: var(--font-serif);
+  font-size: clamp(16px, 2.1vw, 20px);
+  line-height: 1.75;
+  color: #fbeaf5;
+  min-height: 3.5em;
+  white-space: pre-wrap;
+}
+
+#advance-hint {
+  position: absolute;
+  right: 22px;
+  bottom: 14px;
+  color: var(--pink-bright);
+  animation: bounceHint 1.2s ease-in-out infinite;
+  font-size: 14px;
+}
+@keyframes bounceHint {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(5px); opacity: 1; }
+}
+
+/* ---------------------------------------------------------- */
+/* ④ Choice UI                                                 */
+/* ---------------------------------------------------------- */
+
+#choice-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 55;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: rgba(20,8,18,0.5);
+}
+#choice-layer.hidden { display: none; }
+
+.choice-prompt {
+  color: var(--pink-bright);
+  font-size: 14px;
+  letter-spacing: 3px;
+  margin-bottom: 6px;
+}
+
+.choice-btn {
+  width: min(520px, 84vw);
+  padding: 16px 22px;
+  background: linear-gradient(180deg, rgba(58,32,56,0.92), rgba(36,18,34,0.92));
+  border: 1px solid var(--ui-border);
+  color: #fbeaf5;
+  font-size: 16px;
+  font-family: var(--font-serif);
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+.choice-btn:hover {
+  transform: translateX(6px);
+  border-color: var(--pink-bright);
+  background: linear-gradient(180deg, rgba(96,48,84,0.95), rgba(56,26,50,0.95));
+}
+.choice-btn .num {
+  color: var(--pink-bright);
+  margin-right: 10px;
+  font-weight: 700;
+}
+
+/* ---------------------------------------------------------- */
+/* Modal (item inspection)                                     */
+/* ---------------------------------------------------------- */
+
+#modal-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 70;
+  background: rgba(20,8,18,0.68);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#modal-layer.hidden { display: none; }
+
+#modal-box {
+  width: min(480px, 88vw);
+  background: linear-gradient(180deg, #3a2038, #22102a);
+  border: 1px solid var(--ui-border);
+  border-radius: 14px;
+  padding: 26px 28px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+  animation: modalIn 0.3s ease;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.92) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+#modal-title {
+  color: var(--pink-bright);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--ui-border);
+  padding-bottom: 10px;
+}
+
+#modal-body {
+  font-family: var(--font-serif);
+  color: #fbeaf5;
+  font-size: 16px;
+  line-height: 1.8;
+  min-height: 4.5em;
+  white-space: pre-wrap;
+}
+
+#modal-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+#modal-nav button {
+  background: none;
+  border: 1px solid var(--ui-border);
+  color: var(--pink-bright);
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+#modal-nav button:disabled { opacity: 0.3; cursor: default; }
+#modal-page { color: #cf9fc0; font-size: 13px; }
+#modal-nav.hidden { display: none; }
+
+#modal-close {
+  margin-top: 18px;
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(180deg, var(--pink-bright), var(--pink));
+  border: none;
+  border-radius: 8px;
+  color: #4a1338;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 2px;
+}
+
+/* ---------------------------------------------------------- */
+/* Title screen                                                */
+/* ---------------------------------------------------------- */
+
+#title-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(255,173,214,0.22) 0%, transparent 55%),
+    radial-gradient(ellipse at center, #2a1830 0%, #0d0612 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: opacity 0.8s ease;
+}
+#title-screen.hidden { opacity: 0; pointer-events: none; }
+
+#title-logo {
+  font-family: var(--font-serif);
+  font-size: clamp(36px, 7vw, 64px);
+  color: var(--pink-bright);
+  letter-spacing: 12px;
+  margin: 0;
+  text-shadow: 0 0 30px rgba(255,173,214,0.55);
+}
+#title-sub {
+  color: #d9a8c4;
+  letter-spacing: 4px;
+  font-size: 13px;
+  margin: 0 0 40px;
+}
+#title-buttons {
+  display: flex;
+  gap: 18px;
+}
+#title-buttons button {
+  padding: 14px 32px;
+  font-size: 15px;
+  letter-spacing: 4px;
+  background: transparent;
+  border: 1px solid var(--ui-border);
+  color: var(--pink-bright);
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+#title-buttons button:hover {
+  background: rgba(255,173,214,0.15);
+  transform: translateY(-2px);
+}
+.hidden { display: none !important; }
+
+/* ---------------------------------------------------------- */
+/* Responsive                                                   */
+/* ---------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  #dialogue-box { padding: 16px 18px 20px; bottom: 10px; width: 94vw; }
+  .char-slot { width: 27vw; min-width: 0; }
+  .char-slot .char-tag { font-size: 11px; letter-spacing: 1px; }
+  .char-1 { left: 18%; }
+  .char-2 { left: 50%; }
+  .char-3 { left: 82%; }
+  #record-panel { padding: 20px; }
+}
+
+</style>
+
+<div id="game">
+
+  <!-- ① Scene / Background -->
+  <div id="scene">
+    <div id="bg-layer" class="bg-black"></div>
+    <div id="bg-overlay"></div>
+    <div id="deco-layer"></div>
+    <div id="light-flash"></div>
+    <div id="paper-wipe"></div>
+  </div>
+
+  <!-- ③ Interaction Layer (hotspots / character gallery / call record) -->
+  <div id="interaction-layer"></div>
+
+  <!-- HUD -->
+  <div id="hud">
+    <button id="mute-btn" title="靜音／取消靜音">🔊</button>
+    <div id="save-indicator">已自動儲存</div>
+  </div>
+
+  <!-- ② Dialogue Box -->
+  <div id="dialogue-box" class="hidden">
+    <div id="speaker-name"></div>
+    <div id="dialogue-text"></div>
+    <div id="advance-hint">▼</div>
+  </div>
+
+  <!-- ④ Choice UI -->
+  <div id="choice-layer" class="hidden"></div>
+
+  <!-- Item / Info Modal -->
+  <div id="modal-layer" class="hidden">
+    <div id="modal-box">
+      <div id="modal-title"></div>
+      <div id="modal-body"></div>
+      <div id="modal-nav">
+        <button id="modal-prev">◀ 上一頁</button>
+        <span id="modal-page"></span>
+        <button id="modal-next">下一頁 ▶</button>
+      </div>
+      <button id="modal-close">關閉</button>
+    </div>
+  </div>
+
+  <!-- Title Screen -->
+  <div id="title-screen">
+    <h1 id="title-logo">神明客服中心</h1>
+    <p id="title-sub">Divine Customer Service Center</p>
+    <div id="title-buttons">
+      <button id="btn-new-game">開始遊戲</button>
+      <button id="btn-continue" class="hidden">繼續遊戲</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ---- js/engine/audio.js ----
+// ============================================================
+// AudioEngine — procedurally synthesised SFX (no binary assets needed)
+// Every sound the spec calls for (Nokia ring, page turn, stamp, phone
+// vibrate, click, divine power, UI hover) is generated with WebAudio so
+// the whole game stays self-contained.
+// ============================================================
+
+const STORAGE_KEY = "dcsc_muted";
+
+class AudioEngine {
+  constructor() {
+    this.ctx = null;
+    this.muted = localStorage.getItem(STORAGE_KEY) === "1";
+  }
+
+  _ensureCtx() {
+    if (!this.ctx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      this.ctx = new AC();
+    }
+    if (this.ctx.state === "suspended") this.ctx.resume();
+    return this.ctx;
+  }
+
+  toggleMute() {
+    this.muted = !this.muted;
+    localStorage.setItem(STORAGE_KEY, this.muted ? "1" : "0");
+    return this.muted;
+  }
+
+  _tone(freq, dur, { type = "sine", gain = 0.15, delay = 0, sweepTo = null } = {}) {
+    if (this.muted) return;
+    const ctx = this._ensureCtx();
+    const t0 = ctx.currentTime + delay;
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, t0);
+    if (sweepTo) osc.frequency.linearRampToValueAtTime(sweepTo, t0 + dur);
+    g.gain.setValueAtTime(0, t0);
+    g.gain.linearRampToValueAtTime(gain, t0 + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
+    osc.connect(g).connect(ctx.destination);
+    osc.start(t0);
+    osc.stop(t0 + dur + 0.05);
+  }
+
+  _noise(dur, { gain = 0.12, delay = 0, filterFreq = 2000 } = {}) {
+    if (this.muted) return;
+    const ctx = this._ensureCtx();
+    const t0 = ctx.currentTime + delay;
+    const bufferSize = ctx.sampleRate * dur;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    const filter = ctx.createBiquadFilter();
+    filter.type = "bandpass";
+    filter.frequency.value = filterFreq;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(gain, t0);
+    g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
+    src.connect(filter).connect(g).connect(ctx.destination);
+    src.start(t0);
+  }
+
+  click() { this._tone(880, 0.06, { type: "square", gain: 0.06 }); }
+  hover() { this._tone(1400, 0.04, { type: "sine", gain: 0.03 }); }
+
+  pageTurn() { this._noise(0.25, { gain: 0.1, filterFreq: 3500 }); }
+
+  stamp() {
+    this._tone(90, 0.18, { type: "square", gain: 0.18 });
+    this._noise(0.08, { gain: 0.15, filterFreq: 800, delay: 0.02 });
+  }
+
+  phoneRing() {
+    for (let i = 0; i < 2; i++) {
+      this._tone(1200, 0.18, { type: "square", gain: 0.1, delay: i * 0.24 });
+      this._tone(950, 0.18, { type: "square", gain: 0.08, delay: i * 0.24 + 0.05 });
+    }
+  }
+
+  vibrate() {
+    for (let i = 0; i < 4; i++) {
+      this._tone(120, 0.06, { type: "sawtooth", gain: 0.06, delay: i * 0.09 });
+    }
+  }
+
+  divinePower() {
+    this._tone(300, 1.1, { type: "sine", gain: 0.12, sweepTo: 900 });
+    this._tone(600, 1.3, { type: "triangle", gain: 0.08, sweepTo: 1400, delay: 0.1 });
+  }
+
+  typeTick() { this._tone(1800, 0.02, { type: "square", gain: 0.015 }); }
+}
+
+const audio = new AudioEngine();
+
+// ---- js/engine/typewriter.js ----
+// ============================================================
+// Typewriter — renders text at 40~60ms/char, click reveals full text.
+// ============================================================
+
+function typewrite(el, text, { minMs = 40, maxMs = 60, onDone = () => {} } = {}) {
+  let cancelled = false;
+  let done = false;
+  let timer = null;
+  el.textContent = "";
+
+  function finish() {
+    if (done) return;
+    clearTimeout(timer);
+    done = true;
+    el.textContent = text;
+    onDone();
+  }
+
+  function step(i) {
+    if (cancelled) return;
+    if (i >= text.length) {
+      finish();
+      return;
+    }
+    el.textContent = text.slice(0, i + 1);
+    if (i % 3 === 0) audio.typeTick();
+    const delay = minMs + Math.random() * (maxMs - minMs);
+    timer = setTimeout(() => step(i + 1), delay);
+  }
+
+  step(0);
+
+  return {
+    get isDone() { return done; },
+    skip: finish,
+    cancel() { cancelled = true; clearTimeout(timer); },
+  };
+}
+
+// ---- js/engine/dialogue.js ----
+// ============================================================
+// DialogueBox — ② Dialogue Box
+// Supports: typewriter effect, click-to-reveal-full-text,
+// click-again-to-advance. Never force-waits on the player.
+// ============================================================
+
+class DialogueBox {
+  constructor() {
+    this.box = document.getElementById("dialogue-box");
+    this.nameEl = document.getElementById("speaker-name");
+    this.textEl = document.getElementById("dialogue-text");
+    this.queue = [];
+    this.index = 0;
+    this.typer = null;
+    this.onComplete = null;
+    this.active = false;
+
+    this.box.addEventListener("click", () => this._advance());
+  }
+
+  hide() {
+    this.box.classList.add("hidden");
+    this.active = false;
+  }
+
+  /**
+   * lines: Array<string | {speaker?: string, text: string}>
+   * onComplete: called once every line has been shown & clicked through
+   */
+  play(lines, onComplete) {
+    this.queue = lines.map((l) => (typeof l === "string" ? { speaker: null, text: l } : l));
+    this.index = 0;
+    this.onComplete = onComplete;
+    this.active = true;
+    this.box.classList.remove("hidden");
+    this._showCurrent();
+  }
+
+  _showCurrent() {
+    const line = this.queue[this.index];
+    if (!line) return;
+    if (line.speaker) {
+      this.nameEl.textContent = line.speaker;
+      this.nameEl.classList.add("show");
+    } else {
+      this.nameEl.classList.remove("show");
+    }
+    if (this.typer) this.typer.cancel();
+    this.typer = typewrite(this.textEl, line.text, { minMs: 40, maxMs: 60 });
+  }
+
+  _advance() {
+    if (!this.active) return;
+    audio.click();
+    if (this.typer && !this.typer.isDone) {
+      this.typer.skip();
+      return;
+    }
+    this.index += 1;
+    if (this.index >= this.queue.length) {
+      this.active = false;
+      const cb = this.onComplete;
+      this.onComplete = null;
+      if (cb) cb();
+      return;
+    }
+    this._showCurrent();
+  }
+}
+
+const dialogueBox = new DialogueBox();
+
+// ---- js/engine/choice.js ----
+// ============================================================
+// ChoiceUI — ④ Choice UI. Supports 2~6 options.
+// Selecting an option can branch flavor text (line/affinity/easter-egg)
+// without ever gating the main story.
+// ============================================================
+
+class ChoiceUI {
+  constructor() {
+    this.layer = document.getElementById("choice-layer");
+  }
+
+  show(prompt, options, onPick) {
+    this.layer.innerHTML = "";
+    this.layer.classList.remove("hidden");
+
+    if (prompt) {
+      const p = document.createElement("div");
+      p.className = "choice-prompt";
+      p.textContent = prompt;
+      this.layer.appendChild(p);
+    }
+
+    options.forEach((opt, i) => {
+      const btn = document.createElement("button");
+      btn.className = "choice-btn";
+      btn.innerHTML = `<span class="num">${i + 1}</span>${opt.label}`;
+      btn.addEventListener("mouseenter", () => audio.hover());
+      btn.addEventListener("click", () => {
+        audio.click();
+        this.hide();
+        onPick(i, opt);
+      });
+      this.layer.appendChild(btn);
+    });
+  }
+
+  hide() {
+    this.layer.classList.add("hidden");
+    this.layer.innerHTML = "";
+  }
+}
+
+const choiceUI = new ChoiceUI();
+
+// ---- js/engine/modal.js ----
+// ============================================================
+// Modal — item / document inspection popup. Supports multi-page
+// content (used by 文件, and reusable for anything else).
+// ============================================================
+
+class Modal {
+  constructor() {
+    this.layer = document.getElementById("modal-layer");
+    this.titleEl = document.getElementById("modal-title");
+    this.bodyEl = document.getElementById("modal-body");
+    this.navEl = document.getElementById("modal-nav");
+    this.pageEl = document.getElementById("modal-page");
+    this.prevBtn = document.getElementById("modal-prev");
+    this.nextBtn = document.getElementById("modal-next");
+    this.closeBtn = document.getElementById("modal-close");
+
+    this.pages = [];
+    this.pageIndex = 0;
+    this.onCloseCb = null;
+
+    this.prevBtn.addEventListener("click", () => this._go(-1));
+    this.nextBtn.addEventListener("click", () => this._go(1));
+    this.closeBtn.addEventListener("click", () => this.close());
+    this.layer.addEventListener("click", (e) => {
+      if (e.target === this.layer) this.close();
+    });
+  }
+
+  /**
+   * title: string
+   * pages: string[] (one or more pages of body text)
+   */
+  open(title, pages, onClose) {
+    audio.pageTurn();
+    this.titleEl.textContent = title;
+    this.pages = Array.isArray(pages) ? pages : [pages];
+    this.pageIndex = 0;
+    this.onCloseCb = onClose || null;
+    this.layer.classList.remove("hidden");
+    this._render();
+  }
+
+  _render() {
+    this.bodyEl.textContent = this.pages[this.pageIndex];
+    if (this.pages.length > 1) {
+      this.navEl.classList.remove("hidden");
+      this.pageEl.textContent = `${this.pageIndex + 1} / ${this.pages.length}`;
+      this.prevBtn.disabled = this.pageIndex === 0;
+      this.nextBtn.disabled = this.pageIndex === this.pages.length - 1;
+    } else {
+      this.navEl.classList.add("hidden");
+    }
+  }
+
+  _go(delta) {
+    const next = this.pageIndex + delta;
+    if (next < 0 || next >= this.pages.length) return;
+    audio.pageTurn();
+    this.pageIndex = next;
+    this._render();
+  }
+
+  close() {
+    audio.click();
+    this.layer.classList.add("hidden");
+    const cb = this.onCloseCb;
+    this.onCloseCb = null;
+    if (cb) cb();
+  }
+}
+
+const modal = new Modal();
+
+// ---- js/engine/scene.js ----
+// ============================================================
+// SceneManager — ① background layer + transitions
+// (Fade / Camera Zoom / Light Fade / Paper Transition) so scene
+// swaps are never abrupt.
+// ============================================================
+
+function wait(ms) {
+  return new Promise((res) => setTimeout(res, ms));
+}
+
+class SceneManager {
+  constructor() {
+    this.bgLayer = document.getElementById("bg-layer");
+    this.overlay = document.getElementById("bg-overlay");
+    this.decoLayer = document.getElementById("deco-layer");
+    this.lightFlash = document.getElementById("light-flash");
+    this.paperWipe = document.getElementById("paper-wipe");
+    this.current = "bg-black";
+  }
+
+  setDeco(html) {
+    this.decoLayer.innerHTML = html || "";
+  }
+
+  _swap(bgClass, deco) {
+    this.bgLayer.className = bgClass;
+    this.current = bgClass;
+    if (deco !== undefined) this.setDeco(deco);
+  }
+
+  /**
+   * transition: 'fade' | 'zoom' | 'light' | 'paper' | 'none'
+   */
+  async change(bgClass, { transition = "fade", deco = "" } = {}) {
+    switch (transition) {
+      case "zoom": {
+        this.bgLayer.classList.add("zoom");
+        await wait(500);
+        this._swap(bgClass, deco);
+        await wait(60);
+        this.bgLayer.classList.remove("zoom");
+        await wait(700);
+        break;
+      }
+      case "light": {
+        audio.divinePower();
+        this.lightFlash.classList.add("flash");
+        await wait(320);
+        this._swap(bgClass, deco);
+        await wait(600);
+        this.lightFlash.classList.remove("flash");
+        break;
+      }
+      case "paper": {
+        audio.pageTurn();
+        this.paperWipe.classList.add("wipe");
+        await wait(500);
+        this._swap(bgClass, deco);
+        await wait(520);
+        this.paperWipe.classList.remove("wipe");
+        break;
+      }
+      case "none": {
+        this._swap(bgClass, deco);
+        break;
+      }
+      case "fade":
+      default: {
+        this.overlay.classList.add("fade-out");
+        await wait(550);
+        this._swap(bgClass, deco);
+        await wait(550);
+        this.overlay.classList.remove("fade-out");
+        break;
+      }
+    }
+  }
+}
+
+const scene = new SceneManager();
+
+// ---- js/engine/explore.js ----
+// ============================================================
+// ExploreLayer — ③ Interaction Layer, "Explore Mode"
+// Player freely clicks objects, no time limit. Visited objects dim.
+// Once everything is visited, a Continue control appears / scene
+// auto-advances.
+// ============================================================
+
+class ExploreLayer {
+  constructor() {
+    this.layer = document.getElementById("interaction-layer");
+    this.items = [];
+    this.visited = new Set();
+    this.onComplete = null;
+    this.autoAdvance = false;
+  }
+
+  /**
+   * items: [{ id, icon, label, x, y, title, pages }]  x/y in % of screen
+   * opts.autoAdvance: skip the Continue button and call onComplete immediately
+   *   once everything has been viewed
+   * opts.continueLabel: text for the continue button
+   */
+  start(items, onComplete, opts = {}) {
+    this.items = items;
+    this.visited = new Set();
+    this.onComplete = onComplete;
+    this.autoAdvance = !!opts.autoAdvance;
+    this.layer.innerHTML = "";
+
+    const badge = document.createElement("div");
+    badge.className = "progress-badge";
+    badge.id = "explore-progress";
+    badge.textContent = `查看物件 0 / ${items.length}`;
+    this.layer.appendChild(badge);
+
+    items.forEach((item) => {
+      const btn = document.createElement("button");
+      btn.className = "hotspot";
+      btn.style.left = item.x + "%";
+      btn.style.top = item.y + "%";
+      btn.innerHTML = `<div class="icon">${item.icon}</div><div class="label">${item.label}</div>`;
+      btn.addEventListener("mouseenter", () => audio.hover());
+      btn.addEventListener("click", () => this._inspect(item, btn));
+      this.layer.appendChild(btn);
+    });
+
+    if (!this.autoAdvance) {
+      const cont = document.createElement("button");
+      cont.id = "explore-continue";
+      cont.textContent = "繼續";
+      cont.addEventListener("click", () => {
+        audio.click();
+        this.clear();
+        if (this.onComplete) this.onComplete();
+      });
+      this.layer.appendChild(cont);
+    }
+  }
+
+  _inspect(item, btn) {
+    audio.click();
+    const pages = typeof item.pages === "function" ? item.pages() : item.pages;
+    modal.open(item.title, pages, () => {
+      this.visited.add(item.id);
+      btn.classList.add("visited");
+      const badge = document.getElementById("explore-progress");
+      if (badge) badge.textContent = `查看物件 ${this.visited.size} / ${this.items.length}`;
+      if (this.visited.size >= this.items.length) {
+        if (this.autoAdvance) {
+          this.clear();
+          if (this.onComplete) this.onComplete();
+        } else {
+          const cont = document.getElementById("explore-continue");
+          if (cont) cont.classList.add("show");
+        }
+      }
+    });
+  }
+
+  clear() {
+    this.layer.innerHTML = "";
+  }
+}
+
+const explore = new ExploreLayer();
+
+// ---- js/engine/gallery.js ----
+// ============================================================
+// Gallery — clickable "character card" reveal, used for the
+// 客服靈 (一號/二號/三號) introduction and reusable for any future
+// character debut.
+// ============================================================
+
+class Gallery {
+  constructor() {
+    this.layer = document.getElementById("interaction-layer");
+  }
+
+  /**
+   * chars: [{ id, slotClass, icon, tag, name, height, feature, personality, skill }]
+   * onComplete fires once every card has been opened at least once.
+   */
+  reveal(chars, onComplete, opts = {}) {
+    this.layer.innerHTML = "";
+    const visited = new Set();
+
+    chars.forEach((c, i) => {
+      const slot = document.createElement("div");
+      slot.className = `char-slot ${c.slotClass}`;
+      slot.innerHTML = `
+        <div class="char-figure">${c.icon || ""}</div>
+        <div class="char-tag">${c.tag}</div>
+      `;
+      slot.addEventListener("mouseenter", () => audio.hover());
+      slot.addEventListener("click", () => {
+        audio.click();
+        const body =
+          `姓名：${c.name}\n` +
+          `身高：${c.height}\n` +
+          `特徵：${c.feature}\n` +
+          `性格：${c.personality}\n` +
+          `擅長：${c.skill}`;
+        modal.open(c.name, [body], () => {
+          visited.add(c.id);
+          if (visited.size >= chars.length) {
+            if (opts.autoAdvance) {
+              this.clear();
+              if (onComplete) onComplete();
+            } else {
+              const cont = document.getElementById("explore-continue");
+              if (cont) cont.classList.add("show");
+            }
+          }
+        });
+      });
+      this.layer.appendChild(slot);
+
+      setTimeout(() => {
+        audio.divinePower();
+        slot.classList.add("show");
+      }, 400 + i * 500);
+    });
+
+    if (!opts.autoAdvance) {
+      const cont = document.createElement("button");
+      cont.id = "explore-continue";
+      cont.textContent = "繼續";
+      cont.addEventListener("click", () => {
+        audio.click();
+        this.clear();
+        if (onComplete) onComplete();
+      });
+      this.layer.appendChild(cont);
+    }
+  }
+
+  clear() {
+    this.layer.innerHTML = "";
+  }
+}
+
+const gallery = new Gallery();
+
+// ---- js/engine/recordPanel.js ----
+// ============================================================
+// RecordPanel — the giant 卷宗 (case scroll), revealed one field
+// at a time (rather than dumped all at once) to keep a reading
+// rhythm, per spec.
+// ============================================================
+
+class RecordPanel {
+  constructor() {
+    this.layer = document.getElementById("interaction-layer");
+  }
+
+  /**
+   * title: string
+   * fields: [{label, value}]
+   */
+  open(title, fields, onComplete) {
+    this.layer.innerHTML = "";
+    const panel = document.createElement("div");
+    panel.id = "record-panel";
+    panel.innerHTML = `
+      <h3>${title}</h3>
+      <div id="record-fields"></div>
+      <button id="record-next">翻開卷宗</button>
+    `;
+    this.layer.appendChild(panel);
+
+    const fieldsEl = panel.querySelector("#record-fields");
+    const btn = panel.querySelector("#record-next");
+    let i = 0;
+
+    const revealNext = () => {
+      audio.pageTurn();
+      if (i < fields.length) {
+        const f = fields[i];
+        const row = document.createElement("div");
+        row.className = "record-field";
+        row.innerHTML = `<span class="key">${f.label}</span><span class="val">${f.value}</span>`;
+        fieldsEl.appendChild(row);
+        i += 1;
+        btn.textContent = i >= fields.length ? "闔上卷宗" : "翻下一頁";
+      } else {
+        this.layer.innerHTML = "";
+        if (onComplete) onComplete();
+      }
+    };
+
+    btn.addEventListener("click", revealNext);
+  }
+}
+
+const recordPanel = new RecordPanel();
+
+// ---- js/engine/save.js ----
+// ============================================================
+// SaveManager — Auto Save at the start of every Scene.
+// ============================================================
+const KEY = "dcsc_save_v1";
+
+class SaveManager {
+  constructor() {
+    this.indicator = document.getElementById("save-indicator");
+  }
+
+  save(data) {
+    localStorage.setItem(KEY, JSON.stringify({ ...data, savedAt: Date.now() }));
+    this._flashIndicator();
+  }
+
+  load() {
+    const raw = localStorage.getItem(KEY);
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return null;
+    }
+  }
+
+  clear() {
+    localStorage.removeItem(KEY);
+  }
+
+  hasSave() {
+    return !!localStorage.getItem(KEY);
+  }
+
+  _flashIndicator() {
+    if (!this.indicator) return;
+    this.indicator.classList.add("show");
+    clearTimeout(this._t);
+    this._t = setTimeout(() => this.indicator.classList.remove("show"), 1600);
+  }
+}
+
+const saveManager = new SaveManager();
+
+// ---- js/engine/game.js ----
+// ============================================================
+// Game — orchestrator. Steps through a data-driven, modular list
+// of "nodes" (dialogue / explore / choice / gallery / callRecord /
+// dispatchChoice / end). Content lives entirely in js/data/*, so
+// this file never hard-codes a single scene — new chapters, events
+// or holidays can be added as more nodes without touching the engine.
+// ============================================================
+
+const SFX = {
+  phoneRing: () => audio.phoneRing(),
+  vibrate: () => audio.vibrate(),
+  stamp: () => audio.stamp(),
+  divinePower: () => audio.divinePower(),
+};
+
+class Game {
+  constructor(nodes) {
+    this.nodes = nodes;
+    this.index = 0;
+    this.lastSceneLabel = null;
+  }
+
+  start(fromIndex = 0) {
+    this.index = fromIndex;
+    this._run();
+  }
+
+  next() {
+    this.index += 1;
+    this._run();
+  }
+
+  _run() {
+    if (this.index >= this.nodes.length) {
+      this._end();
+      return;
+    }
+    const node = this.nodes[this.index];
+
+    if (node.scene && node.scene !== this.lastSceneLabel) {
+      this.lastSceneLabel = node.scene;
+      saveManager.save({ nodeIndex: this.index, sceneLabel: node.scene });
+    }
+
+    this._runNode(node);
+  }
+
+  async _runNode(node) {
+    if (node.sfxOnEnter && SFX[node.sfxOnEnter]) SFX[node.sfxOnEnter]();
+
+    switch (node.type) {
+      case "dialogue":
+        await this._doBackground(node);
+        dialogueBox.play(node.lines, () => this.next());
+        break;
+
+      case "explore":
+        await this._doBackground(node);
+        this._withIntro(node, () => {
+          dialogueBox.hide();
+          explore.start(node.items, () => this.next(), { autoAdvance: node.autoAdvance });
+        });
+        break;
+
+      case "gallery":
+        await this._doBackground(node);
+        this._withIntro(node, () => {
+          dialogueBox.hide();
+          gallery.reveal(node.chars, () => this.next(), { autoAdvance: node.autoAdvance });
+        });
+        break;
+
+      case "callRecord":
+        await this._doBackground(node);
+        this._withIntro(node, () => {
+          dialogueBox.hide();
+          this._showRecordHotspot(node);
+        });
+        break;
+
+      case "choice":
+      case "dispatchChoice":
+        await this._doBackground(node);
+        this._withIntro(node, () => {
+          dialogueBox.hide();
+          choiceUI.show(node.prompt, node.options, (i, opt) => {
+            const response = typeof opt.response === "function" ? opt.response(i) : opt.response;
+            if (response && response.length) {
+              dialogueBox.play(response, () => this.next());
+            } else {
+              this.next();
+            }
+          });
+        });
+        break;
+
+      case "end":
+        await this._doBackground(node);
+        dialogueBox.play(node.lines || [], () => this._end(node));
+        break;
+
+      default:
+        this.next();
+    }
+  }
+
+  _withIntro(node, after) {
+    if (node.introLines && node.introLines.length) {
+      dialogueBox.play(node.introLines, after);
+    } else {
+      after();
+    }
+  }
+
+  async _doBackground(node) {
+    if (node.background) {
+      await scene.change(node.background, { transition: node.transition || "fade", deco: node.deco });
+    } else if (node.deco !== undefined) {
+      scene.setDeco(node.deco);
+    }
+  }
+
+  _showRecordHotspot(node) {
+    const layer = document.getElementById("interaction-layer");
+    layer.innerHTML = "";
+    const btn = document.createElement("button");
+    btn.className = "hotspot";
+    btn.style.left = (node.hotspot?.x ?? 50) + "%";
+    btn.style.top = (node.hotspot?.y ?? 55) + "%";
+    btn.innerHTML = `<div class="icon">${node.hotspot?.icon ?? "📜"}</div><div class="label">${node.hotspot?.label ?? "卷宗"}</div>`;
+    btn.addEventListener("click", () => {
+      recordPanel.open(node.title, node.fields, () => this.next());
+    });
+    layer.appendChild(btn);
+  }
+
+  _end(node) {
+    modal.open(
+      (node && node.endTitle) || "本章結束",
+      [(node && node.endText) || "……待續。"],
+      () => {}
+    );
+  }
+}
+
+// ---- js/data/characters.js ----
+// ============================================================
+// 客服靈 角色資料 — 角色卡內容，供 Gallery 模組重複使用。
+// ============================================================
+
+const serviceSpirits = [
+  {
+    id: "one",
+    slotClass: "char-1",
+    icon: "①",
+    tag: "客服靈・一號",
+    name: "一號",
+    height: "178cm（顯化數值，可自行調整）",
+    feature: "額頭上永遠浮著一個小小的電話圖示，情緒一激動就會閃爍。",
+    personality: "熱情、衝動，講話比案件處理速度還快。",
+    skill: "安撫暴怒型陳情人，擅長在對方掛電話前多聊三句。",
+  },
+  {
+    id: "two",
+    slotClass: "char-2",
+    icon: "②",
+    tag: "客服靈・二號",
+    name: "二號",
+    height: "165cm（顯化數值，可自行調整）",
+    feature: "隨身攜帶一本永遠翻不到最後一頁的《天界服務條款》。",
+    personality: "龜毛、謹慎，凡事都要按規定跑三次流程。",
+    skill: "處理複雜案件與規章爭議，能把任何投訴繞回「請參閱第九條」。",
+  },
+  {
+    id: "three",
+    slotClass: "char-3",
+    icon: "③",
+    tag: "客服靈・三號",
+    name: "三號",
+    height: "190cm（顯化數值，可自行調整）",
+    feature: "表情永遠只有一種，但案件結案速度全客服中心第一。",
+    personality: "沉默寡言，其實心很軟，只是懶得表現出來。",
+    skill: "深夜緊急案件與情緒潰堤型陳情人，越安靜的案子交給他越安心。",
+  },
+];
+
+// ---- js/data/script.js ----
+// ============================================================
+// 神明客服中心 — 開場劇本
+// 全部以「節點（node）」資料驅動，Scene / Dialogue / Choice / Explore
+// 皆為模組化元件，未來可直接新增節點來擴充：神明登場、主線劇情、
+// 特殊事件、節日活動、戀愛事件……而不需要更動引擎程式碼。
+// ============================================================
+
+const DESK_DECO = `<div class="desk-shape"></div>`;
+const HEAVEN_DECO = `<div class="throne-glow"></div><div class="god-figure"></div>`;
+const CASE_DECO = `<div class="phone-case-shape"></div>`;
+
+const openingScript = [
+  // ---------------------------------------------------------
+  // Scene_01 — 黑畫面
+  // ---------------------------------------------------------
+  {
+    scene: "Scene_01",
+    type: "dialogue",
+    background: "bg-black",
+    transition: "none",
+    lines: ["……", "……", "你死了。"],
+  },
+
+  // ---------------------------------------------------------
+  // Scene_02 — 沒有奈何橋
+  // ---------------------------------------------------------
+  {
+    scene: "Scene_02",
+    type: "dialogue",
+    background: "bg-void",
+    transition: "fade",
+    lines: [
+      "沒有奈何橋。",
+      "沒有孟婆湯。",
+      "也沒有天使前來迎接你。",
+      "只有一片，安靜的，白光。",
+      "以及——一張辦公桌。",
+    ],
+  },
+
+  // ---------------------------------------------------------
+  // Scene_03 — 主管辦公桌（Explore Mode）
+  // ---------------------------------------------------------
+  {
+    scene: "Scene_03",
+    type: "explore",
+    background: "bg-office",
+    transition: "paper",
+    deco: DESK_DECO,
+    introLines: ["你回過神時，已經坐在這張陌生的辦公桌前。", "桌上放著幾樣東西，看起來……都不像是人間的物品。"],
+    items: [
+      {
+        id: "nokia",
+        icon: "📱",
+        label: "Nokia 3310",
+        x: 26,
+        y: 73,
+        title: "Nokia 3310",
+        pages: ["神機。\n\n永不沒電。\n永不損壞。\n\n——不得關機。"],
+      },
+      {
+        id: "badge",
+        icon: "📛",
+        label: "識別證",
+        x: 42,
+        y: 69,
+        title: "識別證",
+        pages: ["主管\n\n員工編號：\n尚未登錄"],
+      },
+      {
+        id: "docs",
+        icon: "📁",
+        label: "文件",
+        x: 58,
+        y: 73,
+        title: "文件",
+        pages: [
+          "（第一頁）\n密密麻麻的行政條文，一個字都看不懂。",
+          "（第二頁）\n依然看不懂，上面蓋滿了各種奇怪的硃紅印章。",
+          "（最後一頁）\n你決定，等等再看。",
+        ],
+      },
+      {
+        id: "meds",
+        icon: "💊",
+        label: "藥袋",
+        x: 74,
+        y: 76,
+        title: "藥袋",
+        pages: [
+          "一個粉紅色小藥袋，上面貼著可愛貼紙：「天庭衛生所　敬贈」。",
+          "警語欄手寫著：「服用後可能出現遺忘、放空、突然很想睡等症狀（其實就是孟婆湯的效果）。」",
+          "內容物：七顆糖果狀的『忘塵丸』，附註——\n「本季孟婆湯預算被砍了，改發這個，一樣有效，請見諒 🙏」",
+        ],
+      },
+    ],
+  },
+
+  // ---------------------------------------------------------
+  // 玉皇大帝登場
+  // ---------------------------------------------------------
+  {
+    scene: "Scene_04",
+    type: "dialogue",
+    background: "bg-heaven",
+    transition: "light",
+    deco: HEAVEN_DECO,
+    lines: [
+      "在你想通任何事情之前——",
+      "眼前的畫面，忽然被一片金光吞沒。",
+      { speaker: "玉皇大帝", text: "醒了？" },
+      { speaker: "玉皇大帝", text: "別緊張，你沒有走錯地方——雖然也沒有走對地方就是了。" },
+      { speaker: "玉皇大帝", text: "這裡是「神明客服中心」，負責處理天下所有祈願、投訴與催辦案件。" },
+      { speaker: "玉皇大帝", text: "而你桌上那張識別證，剛才已經自動登錄完成。" },
+      { speaker: "玉皇大帝", text: "恭喜，你是新任主管。" },
+    ],
+  },
+
+  // ---------------------------------------------------------
+  // 來電紀錄（卷宗）
+  // ---------------------------------------------------------
+  {
+    scene: "Scene_05",
+    type: "callRecord",
+    background: "bg-heaven-alert",
+    transition: "fade",
+    deco: HEAVEN_DECO,
+    introLines: [
+      { speaker: "玉皇大帝", text: "這是最近一位陳情人的紀錄，你自己翻翻看。" },
+      "殿中央，一卷巨大的卷宗緩緩攤開。",
+    ],
+    hotspot: { icon: "📜", label: "巨大卷宗", x: 50, y: 55 },
+    title: "陳情人來電紀錄",
+    fields: [
+      { label: "姓名", value: "王大明" },
+      { label: "祈願次數", value: "1,428 次" },
+      { label: "催辦次數", value: "312 次" },
+      { label: "正式客訴", value: "47 件" },
+      { label: "重複許願", value: "「希望考上公務員」（連續第 7 年）" },
+    ],
+  },
+
+  // ---------------------------------------------------------
+  // 第一個選擇
+  // ---------------------------------------------------------
+  {
+    scene: "Scene_06",
+    type: "choice",
+    background: "bg-heaven",
+    transition: "none",
+    prompt: "玉皇大帝瞇起眼：「看得出來，你生前對客服流程十分熟悉。」",
+    options: [
+      {
+        label: "我沒有。",
+        response: [{ speaker: "玉皇大帝", text: "喔？那更好——代表你是被冤枉分發過來的，境界比較高。" }],
+      },
+      {
+        label: "那是你們效率太差。",
+        response: [
+          { speaker: "玉皇大帝", text: "……" },
+          { speaker: "玉皇大帝", text: "看來你很有潛力。" },
+        ],
+      },
+      {
+        label: "我想投胎。",
+        response: [{ speaker: "玉皇大帝", text: "投胎申請表在三號窗口，記得先把手上的案件結掉再說。" }],
+      },
+    ],
+  },
+
+  // ---------------------------------------------------------
+  // 客服靈登場
+  // ---------------------------------------------------------
+  {
+    scene: "Scene_07",
+    type: "gallery",
+    background: "bg-spotlight",
+    transition: "light",
+    sfxOnEnter: "divinePower",
+    introLines: [
+      { speaker: "玉皇大帝", text: "接下來，讓你認識一下你的下屬。" },
+      "殿內光線一沉。",
+      "三道金光，緩緩落下。",
+    ],
+    chars: serviceSpirits.map((c) => ({
+      id: c.id,
+      slotClass: c.slotClass,
+      icon: c.icon,
+      tag: c.tag,
+      name: c.name,
+      height: c.height,
+      feature: c.feature,
+      personality: c.personality,
+      skill: c.skill,
+    })),
+  },
+
+  // ---------------------------------------------------------
+  // 第一件案件送達
+  // ---------------------------------------------------------
+  {
+    scene: "Scene_08",
+    type: "dialogue",
+    background: "bg-case",
+    transition: "zoom",
+    deco: CASE_DECO,
+    sfxOnEnter: "phoneRing",
+    lines: [
+      "時間，來到 09:00。",
+      "四支 Nokia 3310，同時嘶吼般地震動、響起。",
+      "第一件案件，正式送達。",
+      "陳情人：林小姐，25 歲。",
+      "祈願內容：「希望能多睡十分鐘」。",
+      "——附註：本案陳情人已連續敲響鬧鐘 214 次。",
+    ],
+  },
+
+  // ---------------------------------------------------------
+  // 第一次派遣（正式互動）
+  // ---------------------------------------------------------
+  {
+    scene: "Scene_09",
+    type: "dispatchChoice",
+    background: "bg-case",
+    transition: "none",
+    sfxOnEnter: "vibrate",
+    prompt: "這件案子，你打算派誰去處理？",
+    options: [
+      {
+        label: "自己出馬",
+        response: [
+          "你深吸一口氣，抓起桌上的 Nokia 3310。",
+          "身為新任主管，第一件案子，你決定親自處理。",
+          { speaker: "玉皇大帝", text: "……有膽識。我喜歡。" },
+        ],
+      },
+      {
+        label: "派遣一號",
+        response: [
+          "一號額頭上的電話圖示瘋狂閃爍，整個人已經衝了出去。",
+          { speaker: "一號", text: "包在我身上！絕對讓她多睡到！" },
+          { speaker: "玉皇大帝", text: "……他好像沒聽完案情。" },
+        ],
+      },
+      {
+        label: "派遣二號",
+        response: [
+          "二號翻開手中的《天界服務條款》，眼神銳利。",
+          { speaker: "二號", text: "根據第九條第三項，睡眠請求需先確認陳情人作息紀錄……" },
+          { speaker: "玉皇大帝", text: "……他會先花三小時看條文。" },
+        ],
+      },
+      {
+        label: "派遣三號",
+        response: [
+          "三號面無表情地點了點頭，轉身就走，沒有多說一句話。",
+          "沒有人知道他打算怎麼做。",
+          { speaker: "玉皇大帝", text: "……安靜的案子，交給他最安心。" },
+        ],
+      },
+    ],
+  },
+
+  // ---------------------------------------------------------
+  // 開場結束
+  // ---------------------------------------------------------
+  {
+    scene: "Scene_end",
+    type: "end",
+    background: "bg-case",
+    transition: "fade",
+    lines: [
+      "案件編號 001，正式進入處理程序。",
+      "而你的第一天，才剛剛開始。",
+    ],
+    endTitle: "第一章・待續",
+    endText: "《神明客服中心》開場 Demo 到此結束。\n\n更多案件、更多客服靈、更多故事，敬請期待正式版本。",
+  },
+];
+
+// ---- js/main.js ----
+// ============================================================
+// Entry point — title screen wiring + game boot.
+// ============================================================
+
+const titleScreen = document.getElementById("title-screen");
+const btnNew = document.getElementById("btn-new-game");
+const btnContinue = document.getElementById("btn-continue");
+const muteBtn = document.getElementById("mute-btn");
+
+muteBtn.textContent = audio.muted ? "🔇" : "🔊";
+muteBtn.addEventListener("click", () => {
+  const muted = audio.toggleMute();
+  muteBtn.textContent = muted ? "🔇" : "🔊";
+});
+
+if (saveManager.hasSave()) {
+  btnContinue.classList.remove("hidden");
+}
+
+const game = new Game(openingScript);
+
+function launch(fromIndex) {
+  titleScreen.classList.add("hidden");
+  audio.click();
+  game.start(fromIndex);
+}
+
+btnNew.addEventListener("click", () => {
+  saveManager.clear();
+  launch(0);
+});
+
+btnContinue.addEventListener("click", () => {
+  const data = saveManager.load();
+  launch(data && typeof data.nodeIndex === "number" ? data.nodeIndex : 0);
+});
+</script>
