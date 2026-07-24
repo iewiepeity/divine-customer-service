@@ -1,12 +1,17 @@
 // ============================================================
 // SceneManager — ① background layer + transitions
-// (Fade / Camera Zoom / Light Fade / Paper Transition) so scene
-// swaps are never abrupt.
+// (Fade / Camera Zoom / Light Flash / Paper Wipe / Cloud Fade /
+// Gold Particle Dissolve) so scene swaps are never abrupt.
+// Respects prefers-reduced-motion by collapsing to a quick fade.
 // ============================================================
 import { audio } from "./audio.js";
 
 function wait(ms) {
   return new Promise((res) => setTimeout(res, ms));
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
 export class SceneManager {
@@ -16,6 +21,8 @@ export class SceneManager {
     this.decoLayer = document.getElementById("deco-layer");
     this.lightFlash = document.getElementById("light-flash");
     this.paperWipe = document.getElementById("paper-wipe");
+    this.cloudFade = document.getElementById("cloud-fade");
+    this.particleDissolve = document.getElementById("particle-dissolve");
     this.current = "bg-black";
   }
 
@@ -30,9 +37,18 @@ export class SceneManager {
   }
 
   /**
-   * transition: 'fade' | 'zoom' | 'light' | 'paper' | 'none'
+   * transition: 'fade' | 'zoom' | 'light' | 'paper' | 'cloud' | 'particle' | 'none'
    */
   async change(bgClass, { transition = "fade", deco = "" } = {}) {
+    if (prefersReducedMotion() && transition !== "none") {
+      this.overlay.classList.add("fade-out");
+      await wait(120);
+      this._swap(bgClass, deco);
+      await wait(120);
+      this.overlay.classList.remove("fade-out");
+      return;
+    }
+
     switch (transition) {
       case "zoom": {
         this.bgLayer.classList.add("zoom");
@@ -59,6 +75,24 @@ export class SceneManager {
         this._swap(bgClass, deco);
         await wait(520);
         this.paperWipe.classList.remove("wipe");
+        break;
+      }
+      case "cloud": {
+        audio.pageTurn();
+        this.cloudFade.classList.add("active");
+        await wait(420);
+        this._swap(bgClass, deco);
+        await wait(480);
+        this.cloudFade.classList.remove("active");
+        break;
+      }
+      case "particle": {
+        audio.divinePower();
+        this.particleDissolve.classList.add("active");
+        await wait(380);
+        this._swap(bgClass, deco);
+        await wait(520);
+        this.particleDissolve.classList.remove("active");
         break;
       }
       case "none": {

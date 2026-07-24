@@ -5,6 +5,7 @@
 // ============================================================
 import { typewrite } from "./typewriter.js";
 import { audio } from "./audio.js";
+import { interpolate } from "./variables.js";
 
 export class DialogueBox {
   constructor() {
@@ -42,13 +43,18 @@ export class DialogueBox {
     const line = this.queue[this.index];
     if (!line) return;
     if (line.speaker) {
-      this.nameEl.textContent = line.speaker;
+      this.nameEl.textContent = interpolate(line.speaker);
       this.nameEl.classList.add("show");
     } else {
       this.nameEl.classList.remove("show");
     }
     if (this.typer) this.typer.cancel();
-    this.typer = typewrite(this.textEl, line.text, { minMs: 40, maxMs: 60 });
+    this.box.classList.add("typing");
+    this.typer = typewrite(this.textEl, interpolate(line.text), {
+      minMs: 40,
+      maxMs: 60,
+      onDone: () => this.box.classList.remove("typing"),
+    });
   }
 
   _advance() {

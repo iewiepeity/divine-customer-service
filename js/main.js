@@ -1,5 +1,6 @@
 // ============================================================
-// Entry point — title screen wiring + game boot.
+// Entry point — loading screen, title screen, nickname entry,
+// and game boot.
 // ============================================================
 import { Game } from "./engine/game.js";
 import { openingScript } from "./data/script.js";
@@ -7,19 +8,78 @@ import { saveManager } from "./engine/save.js";
 import { audio } from "./engine/audio.js";
 import { roster } from "./engine/roster.js";
 import { deities } from "./data/deities.js";
+import { setVar } from "./engine/variables.js";
 
+// ---------------------------------------------------------------
+// Loading screen
+// ---------------------------------------------------------------
+const loadingScreen = document.getElementById("loading-screen");
+const loadingLine = document.getElementById("loading-line");
+
+const LOADING_LINES = [
+  "正在連線神明客服中心……",
+  "一號正在確認流程。",
+  "二號跑去聊天了。",
+  "三號好像又迷路了。",
+  "玉皇大帝表示現有人力尚可調度。",
+];
+
+function bootLoadingScreen() {
+  let lineIndex = 0;
+  loadingLine.textContent = LOADING_LINES[0];
+  const rotateTimer = setInterval(() => {
+    lineIndex = (lineIndex + 1) % LOADING_LINES.length;
+    loadingLine.textContent = LOADING_LINES[lineIndex];
+  }, 750);
+
+  const start = performance.now();
+  const MIN_MS = 500;
+  const TIMEOUT_MS = 4000;
+  let settled = false;
+
+  const finish = () => {
+    if (settled) return;
+    settled = true;
+    const elapsed = performance.now() - start;
+    const remaining = Math.max(0, MIN_MS - elapsed);
+    setTimeout(() => {
+      clearInterval(rotateTimer);
+      loadingScreen.classList.add("hidden");
+    }, remaining);
+  };
+
+  const coverImg = new Image();
+  coverImg.onload = finish;
+  coverImg.onerror = () => {
+    loadingLine.textContent = "部分圖片載入失敗，仍可繼續遊戲。";
+    setTimeout(finish, 500);
+  };
+  coverImg.src = "assets/backgrounds/cover.jpg";
+  setTimeout(finish, TIMEOUT_MS);
+}
+
+bootLoadingScreen();
+
+// ---------------------------------------------------------------
+// Title screen / nickname entry / boot
+// ---------------------------------------------------------------
 const titleScreen = document.getElementById("title-screen");
 const btnNew = document.getElementById("btn-new-game");
 const btnContinue = document.getElementById("btn-continue");
 const btnRoster = document.getElementById("btn-roster");
 const muteBtn = document.getElementById("mute-btn");
 
+const nicknameScreen = document.getElementById("nickname-screen");
+const nicknameInput = document.getElementById("nickname-input");
+const nicknameError = document.getElementById("nickname-error");
+const nicknameConfirm = document.getElementById("nickname-confirm");
+
 btnRoster.addEventListener("click", () => roster.open(deities));
 
-muteBtn.textContent = audio.muted ? "🔇" : "🔊";
+muteBtn.classList.toggle("is-muted", audio.muted);
 muteBtn.addEventListener("click", () => {
   const muted = audio.toggleMute();
-  muteBtn.textContent = muted ? "🔇" : "🔊";
+  muteBtn.classList.toggle("is-muted", muted);
 });
 
 if (saveManager.hasSave()) {
@@ -36,10 +96,39 @@ function launch(fromIndex) {
 
 btnNew.addEventListener("click", () => {
   saveManager.clear();
+  setVar("nickname", "主管");
+  audio.click();
+  titleScreen.classList.add("hidden");
+  nicknameScreen.classList.remove("hidden");
+  nicknameError.classList.remove("show");
+  nicknameInput.value = "";
+  nicknameInput.focus();
+});
+
+function confirmNickname() {
+  const value = nicknameInput.value.trim();
+  if (!value) {
+    audio.click();
+    nicknameError.classList.add("show");
+    nicknameInput.classList.add("shake");
+    setTimeout(() => nicknameInput.classList.remove("shake"), 420);
+    nicknameInput.focus();
+    return;
+  }
+  setVar("nickname", value);
+  saveManager.save({ nickname: value });
+  audio.stamp();
+  nicknameScreen.classList.add("hidden");
   launch(0);
+}
+
+nicknameConfirm.addEventListener("click", confirmNickname);
+nicknameInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") confirmNickname();
 });
 
 btnContinue.addEventListener("click", () => {
   const data = saveManager.load();
+  if (data && data.nickname) setVar("nickname", data.nickname);
   launch(data && typeof data.nodeIndex === "number" ? data.nodeIndex : 0);
 });

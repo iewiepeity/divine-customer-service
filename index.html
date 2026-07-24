@@ -18,6 +18,12 @@
       <div id="deco-layer"></div>
       <div id="light-flash"></div>
       <div id="paper-wipe"></div>
+      <div id="cloud-fade"></div>
+      <div id="particle-dissolve">
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span>
+      </div>
     </div>
 
     <!-- ③ Interaction Layer (hotspots / character gallery / call record) -->
@@ -25,15 +31,40 @@
 
     <!-- HUD -->
     <div id="hud">
-      <button id="mute-btn" title="靜音／取消靜音">🔊</button>
+      <button id="mute-btn" title="靜音／取消靜音"></button>
       <div id="save-indicator">已自動儲存</div>
+    </div>
+
+    <!-- Status Bar (fades in once the player formally takes office) -->
+    <div id="hud-status" class="hidden">
+      <button id="hud-toggle" aria-label="展開／收合狀態欄"><span class="hud-toggle-icon"></span></button>
+      <div id="hud-body">
+        <div class="hud-row" id="hud-datetime"></div>
+        <div class="hud-row" id="hud-location"></div>
+        <div class="hud-row" id="hud-pending"></div>
+        <div class="hud-divider"></div>
+        <div id="hud-spirits"></div>
+      </div>
+    </div>
+
+    <!-- 案件處理回報單 (dispatch result card) -->
+    <div id="result-layer" class="hidden">
+      <div id="result-card">
+        <div id="result-seal"></div>
+        <div id="result-header">
+          <div id="result-kicker">神界案件處理回報單</div>
+          <div id="result-case-no"></div>
+        </div>
+        <div id="result-fields"></div>
+        <button id="result-close">結案歸檔</button>
+      </div>
     </div>
 
     <!-- ② Dialogue Box -->
     <div id="dialogue-box" class="hidden">
       <div id="speaker-name"></div>
       <div id="dialogue-text"></div>
-      <div id="advance-hint">▼</div>
+      <div id="advance-hint"></div>
     </div>
 
     <!-- ④ Choice UI -->
@@ -42,20 +73,29 @@
     <!-- Item / Info Modal -->
     <div id="modal-layer" class="hidden">
       <div id="modal-box">
-        <img id="modal-image" class="hidden" alt="" />
-        <div id="modal-title"></div>
-        <div id="modal-body"></div>
-        <div id="modal-nav">
-          <button id="modal-prev">◀ 上一頁</button>
-          <span id="modal-page"></span>
-          <button id="modal-next">下一頁 ▶</button>
+        <button id="modal-close" aria-label="關閉"></button>
+        <div id="modal-image-wrap">
+          <img id="modal-image" class="hidden" alt="" />
         </div>
-        <button id="modal-close">關閉</button>
+        <div id="modal-title"></div>
+        <div id="modal-body-wrap">
+          <div id="modal-body"></div>
+        </div>
+        <div id="modal-nav">
+          <button id="modal-prev" aria-label="上一頁"></button>
+          <span id="modal-page"></span>
+          <button id="modal-next" aria-label="下一頁"></button>
+        </div>
       </div>
     </div>
 
     <!-- Title Screen -->
     <div id="title-screen">
+      <div id="title-particles" aria-hidden="true">
+        <span class="mote"></span><span class="mote"></span><span class="mote"></span>
+        <span class="mote"></span><span class="mote"></span><span class="mote"></span>
+        <span class="mote"></span><span class="mote"></span>
+      </div>
       <h1 id="title-logo">神明客服中心</h1>
       <p id="title-sub">Divine Customer Service Center</p>
       <div id="title-buttons">
@@ -70,10 +110,33 @@
       <div id="roster-panel">
         <div id="roster-header">
           <h2>神界部門名冊</h2>
-          <button id="roster-close">✕</button>
+          <button id="roster-close" aria-label="關閉"></button>
         </div>
         <div id="roster-grid"></div>
+        <div id="roster-pager" class="hidden">
+          <button id="roster-prev">◀ 上一頁</button>
+          <span id="roster-page-label"></span>
+          <button id="roster-next">下一頁 ▶</button>
+        </div>
       </div>
+    </div>
+
+    <!-- 主管登錄視窗 (nickname entry) -->
+    <div id="nickname-screen" class="hidden">
+      <div id="nickname-panel">
+        <div id="nickname-eyebrow">神明客服中心・人事登錄系統</div>
+        <h2 id="nickname-title">請登錄新任主管姓名</h2>
+        <input id="nickname-input" type="text" maxlength="12" placeholder="主管" autocomplete="off" />
+        <div id="nickname-error">姓名不可空白，請輸入登錄姓名。</div>
+        <button id="nickname-confirm">確認登錄</button>
+      </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <div id="loading-emblem">神</div>
+      <div id="loading-title">神明客服中心</div>
+      <div id="loading-line"></div>
     </div>
 
   </div>

@@ -3,6 +3,7 @@
 // content (used by 文件, and reusable for anything else).
 // ============================================================
 import { audio } from "./audio.js";
+import { interpolate } from "./variables.js";
 
 export class Modal {
   constructor() {
@@ -34,7 +35,7 @@ export class Modal {
    * opts.image: optional portrait/illustration URL shown above the title
    */
   open(title, pages, onClose, opts = {}) {
-    audio.pageTurn();
+    audio.itemOpen();
     if (opts.image) {
       this.imageEl.src = opts.image;
       this.imageEl.classList.remove("hidden");
@@ -42,8 +43,8 @@ export class Modal {
       this.imageEl.removeAttribute("src");
       this.imageEl.classList.add("hidden");
     }
-    this.titleEl.textContent = title;
-    this.pages = Array.isArray(pages) ? pages : [pages];
+    this.titleEl.textContent = interpolate(title);
+    this.pages = (Array.isArray(pages) ? pages : [pages]).map(interpolate);
     this.pageIndex = 0;
     this.onCloseCb = onClose || null;
     this.layer.classList.remove("hidden");

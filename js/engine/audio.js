@@ -65,14 +65,14 @@ class AudioEngine {
     src.start(t0);
   }
 
-  click() { this._tone(880, 0.06, { type: "square", gain: 0.06 }); }
-  hover() { this._tone(1400, 0.04, { type: "sine", gain: 0.03 }); }
+  click() { this._tone(880, 0.06, { type: "square", gain: 0.07 }); }
+  hover() { this._tone(1400, 0.04, { type: "sine", gain: 0.035 }); }
 
   pageTurn() { this._noise(0.25, { gain: 0.1, filterFreq: 3500 }); }
 
   stamp() {
-    this._tone(90, 0.18, { type: "square", gain: 0.18 });
-    this._noise(0.08, { gain: 0.15, filterFreq: 800, delay: 0.02 });
+    this._tone(90, 0.18, { type: "square", gain: 0.16 });
+    this._noise(0.08, { gain: 0.13, filterFreq: 800, delay: 0.02 });
   }
 
   phoneRing() {
@@ -84,16 +84,28 @@ class AudioEngine {
 
   vibrate() {
     for (let i = 0; i < 4; i++) {
-      this._tone(120, 0.06, { type: "sawtooth", gain: 0.06, delay: i * 0.09 });
+      this._tone(120, 0.06, { type: "sawtooth", gain: 0.07, delay: i * 0.09 });
     }
   }
 
   divinePower() {
-    this._tone(300, 1.1, { type: "sine", gain: 0.12, sweepTo: 900 });
+    this._tone(300, 1.1, { type: "sine", gain: 0.11, sweepTo: 900 });
     this._tone(600, 1.3, { type: "triangle", gain: 0.08, sweepTo: 1400, delay: 0.1 });
   }
 
-  typeTick() { this._tone(1800, 0.02, { type: "square", gain: 0.015 }); }
+  typeTick() { this._tone(1800, 0.02, { type: "square", gain: 0.02 }); }
+
+  /** 玉石碰撞 — bright short glass/jade clink, used for confirmations */
+  gemClink() {
+    this._tone(2200, 0.12, { type: "sine", gain: 0.09 });
+    this._tone(3100, 0.08, { type: "sine", gain: 0.05, delay: 0.02 });
+  }
+
+  /** 物件開啟 — soft two-note ascending chime for opening an item/card */
+  itemOpen() {
+    this._tone(660, 0.1, { type: "sine", gain: 0.08 });
+    this._tone(990, 0.14, { type: "sine", gain: 0.08, delay: 0.07 });
+  }
 }
 
 export const audio = new AudioEngine();

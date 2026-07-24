@@ -9,7 +9,8 @@ class SaveManager {
   }
 
   save(data) {
-    localStorage.setItem(KEY, JSON.stringify({ ...data, savedAt: Date.now() }));
+    const existing = this.load() || {};
+    localStorage.setItem(KEY, JSON.stringify({ ...existing, ...data, savedAt: Date.now() }));
     this._flashIndicator();
   }
 

@@ -14,6 +14,9 @@ import { recordPanel } from "./recordPanel.js";
 import { modal } from "./modal.js";
 import { audio } from "./audio.js";
 import { saveManager } from "./save.js";
+import { resultCard } from "./resultCard.js";
+import { hud } from "../ui/hud.js";
+import { SCROLL_ICON } from "../ui/icons.js";
 
 const SFX = {
   phoneRing: () => audio.phoneRing(),
@@ -56,6 +59,10 @@ export class Game {
 
   async _runNode(node) {
     if (node.sfxOnEnter && SFX[node.sfxOnEnter]) SFX[node.sfxOnEnter]();
+    if (node.hud) {
+      hud.show();
+      hud.update(node.hud);
+    }
 
     switch (node.type) {
       case "dialogue":
@@ -93,11 +100,19 @@ export class Game {
         this._withIntro(node, () => {
           dialogueBox.hide();
           choiceUI.show(node.prompt, node.options, (i, opt) => {
+            if (opt.hud) hud.update(opt.hud);
+            const proceed = () => {
+              if (opt.resultCard) {
+                resultCard.show(opt.resultCard, () => this.next());
+              } else {
+                this.next();
+              }
+            };
             const response = typeof opt.response === "function" ? opt.response(i) : opt.response;
             if (response && response.length) {
-              dialogueBox.play(response, () => this.next());
+              dialogueBox.play(response, proceed);
             } else {
-              this.next();
+              proceed();
             }
           });
         });
@@ -136,7 +151,9 @@ export class Game {
     btn.className = "hotspot";
     btn.style.left = (node.hotspot?.x ?? 50) + "%";
     btn.style.top = (node.hotspot?.y ?? 55) + "%";
-    btn.innerHTML = `<div class="icon">${node.hotspot?.icon ?? "📜"}</div><div class="label">${node.hotspot?.label ?? "卷宗"}</div>`;
+    btn.innerHTML =
+      `<div class="icon has-image" style="background-image:url('${SCROLL_ICON}')"></div>` +
+      `<div class="label">${node.hotspot?.label ?? "卷宗"}</div>`;
     btn.addEventListener("click", () => {
       recordPanel.open(node.title, node.fields, () => this.next());
     });

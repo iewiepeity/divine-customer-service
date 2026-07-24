@@ -12,6 +12,7 @@ export const deities = [
     department: "姻緣部",
     domain: "掌戀愛、婚姻、桃花",
     personality: "和藹睿智，重視緣分，不強求感情。",
+    speechStyle: "說話像媒人婆，愛講「有緣」「時候未到」，語氣溫和又帶點看戲的調皮。",
     image: "assets/deities/yuelao.jpg",
   },
   {
@@ -20,6 +21,7 @@ export const deities = [
     department: "財運部",
     domain: "掌財運、升遷、投資",
     personality: "精明務實，重視付出，不喜不勞而獲。",
+    speechStyle: "說話直接切重點，愛用報酬率、成本這類詞彙比喻人情世故。",
     image: "assets/deities/caishen.jpg",
   },
   {
@@ -28,6 +30,7 @@ export const deities = [
     department: "學業部",
     domain: "掌學業、考試、靈感",
     personality: "儒雅自律，重視勤學，討厭臨時抱佛腳。",
+    speechStyle: "用詞文雅、引經據典，偶爾忍不住糾正別人的錯字病句。",
     image: "assets/deities/wenchang.jpg",
   },
   {
@@ -36,6 +39,7 @@ export const deities = [
     department: "地方事務部",
     domain: "掌地方雜務",
     personality: "親切厚道，像里長伯，最常被塞案。",
+    speechStyle: "開口總是「後生仔啊～」，親切得像巷口雜貨店老闆。",
     image: "assets/deities/tudigong.jpg",
   },
   {
@@ -44,6 +48,7 @@ export const deities = [
     department: "平安部",
     domain: "掌平安、交通、救援",
     personality: "慈愛果斷，重視生命，不推卸責任。",
+    speechStyle: "語氣沉穩溫暖，句尾常帶「莫驚，我在」這類安定人心的話。",
     image: "assets/deities/mazu.jpg",
   },
   {
@@ -52,6 +57,7 @@ export const deities = [
     department: "家庭部",
     domain: "掌求子、生育、家庭",
     personality: "溫柔細膩，尊重生命，不接受客製化願望。",
+    speechStyle: "說話輕柔仔細，像在哄孩子，句子偏長、充滿叮嚀。",
     image: "assets/deities/zhushengniangniang.jpg",
   },
   {
@@ -60,6 +66,7 @@ export const deities = [
     department: "司法部",
     domain: "掌冤屈、因果、陰陽",
     personality: "威嚴公正，重證據，不講人情。",
+    speechStyle: "字字帶著審訊感，習慣先問一句「證據呢？」才肯往下談。",
     image: "assets/deities/chenghuangye.jpg",
   },
   {
@@ -68,6 +75,7 @@ export const deities = [
     department: "事業部",
     domain: "掌事業、信用、忠義",
     personality: "剛正守信，厭惡欺詐與背叛。",
+    speechStyle: "言簡意賅、擲地有聲，最愛講「信」字，說話像在立誓。",
     image: "assets/deities/guanshengdijun.jpg",
   },
   {
@@ -76,6 +84,7 @@ export const deities = [
     department: "天候部",
     domain: "掌雷電、天災",
     personality: "急躁嫉惡，做事衝動但願意補救。",
+    speechStyle: "語速快、音量大，常常一句話還沒說完就先炸一聲雷。",
     image: "assets/deities/leigong.jpg",
   },
   {
@@ -84,6 +93,7 @@ export const deities = [
     department: "降雨部",
     domain: "掌降雨、水域",
     personality: "沉穩高傲，重全局，不因個人願望破壞平衡。",
+    speechStyle: "用詞居高臨下，喜歡自稱「本王」，話中帶著不容質疑的份量。",
     image: "assets/deities/longwang.jpg",
   },
   {
@@ -92,6 +102,7 @@ export const deities = [
     department: "輪迴部",
     domain: "掌輪迴、遺忘",
     personality: "淡然看透生死，溫和而疏離。",
+    speechStyle: "說話慢、留白多，常常一句話講到一半就不說了，讓人自己去想。",
     image: "assets/deities/mengpo.jpg",
   },
   {
@@ -100,6 +111,7 @@ export const deities = [
     department: "神界最高主管",
     domain: "掌神界秩序",
     personality: "威嚴重效率，創造客服靈一號、二號、三號。",
+    speechStyle: "官腔十足，句尾常帶反問句，聽起來像在隨時考核你的臨場反應。",
     image: "assets/deities/yuhuangdadi.jpg",
   },
 ];
