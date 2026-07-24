@@ -33,6 +33,13 @@ export class Hud {
     requestAnimationFrame(() => this.el.classList.add("show"));
   }
 
+  hide() {
+    if (!this.el || !this.visible) return;
+    this.visible = false;
+    this.el.classList.remove("show");
+    setTimeout(() => this.el.classList.add("hidden"), 720);
+  }
+
   update(partial) {
     if (!partial) return;
     this.state = { ...(this.state || {}), ...partial };

@@ -122,29 +122,21 @@ html, body {
 
 .bg-heaven {
   background:
-    radial-gradient(ellipse at 50% 10%, rgba(255,201,230,0.6) 0%, transparent 45%),
-    radial-gradient(ellipse at 50% 100%, #6a4a8e 0%, transparent 60%),
-    linear-gradient(180deg, #b98fd1 0%, #6b4a92 45%, #2a1c44 100%);
+    linear-gradient(180deg, rgba(20,10,25,0.1) 0%, rgba(15,8,20,0.35) 100%),
+    url("../assets/backgrounds/heaven-hall.jpg") center / cover no-repeat;
 }
 
 .bg-heaven-alert {
   background:
-    radial-gradient(ellipse at 50% 15%, rgba(255,150,170,0.45) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 100%, #6a4a8e 0%, transparent 60%),
-    linear-gradient(180deg, #b98fd1 0%, #6b4a92 45%, #2a1c44 100%);
+    radial-gradient(ellipse at 50% 15%, rgba(255,150,170,0.25) 0%, transparent 50%),
+    linear-gradient(180deg, rgba(20,10,25,0.15) 0%, rgba(15,8,20,0.4) 100%),
+    url("../assets/backgrounds/heaven-hall.jpg") center / cover no-repeat;
 }
 
 .bg-spotlight {
   background:
     radial-gradient(circle at 50% 45%, rgba(255,214,235,0.65) 0%, rgba(255,214,235,0.1) 30%, transparent 55%),
     linear-gradient(180deg, #241830 0%, #0f0916 100%);
-}
-
-.bg-case {
-  background:
-    linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.5)),
-    radial-gradient(ellipse at 50% 0%, rgba(190,170,255,0.35) 0%, transparent 55%),
-    linear-gradient(160deg, #322d54 0%, #201c38 60%, #100e1e 100%);
 }
 
 /* Light flash (transition style: Light Fade) */
@@ -186,6 +178,10 @@ html, body {
 
 /* Generic fade veil for scene swaps */
 #bg-overlay.fade-out { background: rgba(0,0,0,1); }
+#bg-overlay.fade-out-white {
+  background: var(--cloud-white);
+  transition: background 1.6s ease;
+}
 
 /* Cloud Fade transition */
 #cloud-fade {
@@ -258,73 +254,96 @@ html, body {
   pointer-events: none;
 }
 
-.throne-glow {
+/* 客服靈 standing in the office at fixed positions (一號 left / 二號
+   center / 三號 right) — used from the moment they take their posts
+   through the dispatch choice and ending. */
+.office-spirit {
   position: absolute;
-  top: 8%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 46vw;
-  max-width: 520px;
-  aspect-ratio: 1;
-  background: radial-gradient(circle, rgba(255,214,235,0.55) 0%, rgba(255,214,235,0.0) 70%);
-  filter: blur(2px);
-}
-
-.god-figure {
-  position: absolute;
-  bottom: 14%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(38vw, 340px);
-  height: 46%;
-  background: linear-gradient(180deg, #ffd9ec 0%, #d8aaf0 45%, #a76fd1 100%);
-  clip-path: polygon(50% 0%, 78% 10%, 92% 40%, 82% 100%, 18% 100%, 8% 40%, 22% 10%);
-  box-shadow: 0 0 80px rgba(255,201,230,0.5);
-}
-
-.scroll-shape {
-  position: absolute;
-  bottom: 10%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(60vw, 560px);
-  height: 22%;
-  background: linear-gradient(180deg, #fff0f7 0%, #f3cfe4 100%);
-  border-radius: 12px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-}
-
-.spirit-column {
-  position: absolute;
-  bottom: 12%;
-  width: 12vw;
-  max-width: 140px;
-  height: 50%;
-  border-radius: 50% 50% 20% 20%;
-  box-shadow: 0 0 60px currentColor;
+  bottom: 0;
+  width: min(24vw, 280px);
+  height: 64%;
+  background-size: contain;
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 22px 30px rgba(0,0,0,0.5));
   opacity: 0;
-  transform: translateY(30px) scale(0.7);
-  transition: opacity 1s ease, transform 1s ease;
 }
-.spirit-column.show {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-.spirit-1 { left: 24%; color: rgba(255,180,190,0.55); background: linear-gradient(180deg, rgba(255,209,217,0.85), rgba(255,143,163,0.3)); }
-.spirit-2 { left: 50%; transform: translate(-50%, 30px) scale(0.7); color: rgba(190,180,255,0.55); background: linear-gradient(180deg, rgba(214,200,255,0.85), rgba(155,138,224,0.3)); }
-.spirit-2.show { transform: translate(-50%, 0) scale(1); }
-.spirit-3 { right: 24%; left: auto; color: rgba(170,240,210,0.5); background: linear-gradient(180deg, rgba(200,255,230,0.85), rgba(127,224,184,0.3)); }
-
-.phone-case-shape {
-  position: absolute;
-  bottom: 8%;
+.office-spirit-left { left: 4%; animation: officeSpiritInSide 0.7s var(--ease-glass) 0.1s forwards; }
+.office-spirit-center {
   left: 50%;
   transform: translateX(-50%);
-  width: min(70vw, 620px);
-  height: 26%;
-  background: linear-gradient(180deg, #4a3f6e 0%, #241f3d 100%);
-  border-radius: 8px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  animation: officeSpiritInCenter 0.7s var(--ease-glass) 0.35s forwards;
+}
+.office-spirit-right { right: 4%; animation: officeSpiritInSide 0.7s var(--ease-glass) 0.6s forwards; }
+@keyframes officeSpiritInSide {
+  from { opacity: 0; transform: translateY(26px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes officeSpiritInCenter {
+  from { opacity: 0; transform: translateX(-50%) translateY(26px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* On-stage character portrait for dialogue-driven scenes (e.g. 玉皇大帝) */
+#stage-portrait {
+  position: absolute;
+  right: 5%;
+  bottom: 160px;
+  width: min(30vw, 380px);
+  height: min(60vh, 600px);
+  z-index: 8;
+  pointer-events: none;
+}
+#stage-portrait.hidden { display: none; }
+#stage-portrait-img {
+  position: absolute;
+  inset: 0;
+  background-size: contain;
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 30px 40px rgba(0,0,0,0.55));
+  opacity: 0;
+  transform: scale(0.92) translateY(16px);
+}
+#stage-portrait.portrait-enter #stage-portrait-img {
+  animation: portraitEnter 0.7s var(--ease-glass) forwards;
+}
+#stage-portrait.portrait-exit #stage-portrait-img {
+  animation: portraitExit 0.5s ease forwards;
+}
+@keyframes portraitEnter {
+  from { opacity: 0; transform: scale(0.92) translateY(16px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes portraitExit {
+  from { opacity: 1; transform: scale(1) translateY(0); }
+  to { opacity: 0; transform: scale(0.95) translateY(10px); }
+}
+#stage-portrait-particles { position: absolute; inset: 0; overflow: visible; }
+#stage-portrait-particles span {
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold-bright);
+  box-shadow: 0 0 8px 2px rgba(243,222,163,0.75);
+  opacity: 0;
+}
+#stage-portrait.portrait-enter #stage-portrait-particles span {
+  animation: particleBurst 0.85s ease-out forwards;
+}
+#stage-portrait-particles span:nth-child(1) { --dx: -70px; --dy: -160px; animation-delay: 0.05s; }
+#stage-portrait-particles span:nth-child(2) { --dx: 60px; --dy: -190px; animation-delay: 0.15s; }
+#stage-portrait-particles span:nth-child(3) { --dx: -110px; --dy: -80px; animation-delay: 0.1s; }
+#stage-portrait-particles span:nth-child(4) { --dx: 100px; --dy: -100px; animation-delay: 0.2s; }
+#stage-portrait-particles span:nth-child(5) { --dx: -30px; --dy: -220px; animation-delay: 0s; }
+#stage-portrait-particles span:nth-child(6) { --dx: 30px; --dy: -230px; animation-delay: 0.25s; }
+
+@media (max-width: 780px) {
+  #stage-portrait { width: min(46vw, 320px); bottom: 140px; right: 2%; }
+  .office-spirit { width: min(30vw, 220px); }
 }
 
 /* ---------------------------------------------------------- */
@@ -672,7 +691,7 @@ html, body {
   animation: fieldIn 0.5s ease forwards;
 }
 @keyframes fieldIn { to { opacity: 1; transform: translateX(0); } }
-.record-field .key { color: #6b5228; }
+.record-field .key { color: #6b5228; flex-shrink: 0; }
 .record-field .val { font-weight: 700; color: #a8452f; text-align: right; }
 #record-next {
   flex-shrink: 0;
@@ -686,10 +705,44 @@ html, body {
   font-size: 14px;
   letter-spacing: 2px;
   cursor: pointer;
-  transition: transform var(--dur-fast) ease, filter var(--dur-fast) ease;
+  transition: transform var(--dur-fast) ease, filter var(--dur-fast) ease, opacity var(--dur-fast) ease;
 }
 #record-next:hover { filter: brightness(1.12); transform: translateY(-2px); }
 #record-next:active { transform: translateY(0) scale(0.97); }
+#record-next:disabled { opacity: 0.45; cursor: default; transform: none; filter: none; }
+
+/* 卷宗封面 — shown first so the record is never blank on open */
+#record-cover {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background:
+    repeating-linear-gradient(135deg, rgba(180,140,70,0.06) 0 2px, transparent 2px 14px),
+    linear-gradient(180deg, #8a6a2e, #6b5220 130%);
+  color: var(--cream-gold);
+  border-radius: 4px;
+  transition: opacity var(--dur-med) ease, transform var(--dur-med) var(--ease-glass);
+}
+#record-cover.opening { opacity: 0; transform: scale(0.94); }
+.record-cover-seal {
+  width: 62px; height: 62px; border-radius: 50%;
+  border: 2px solid rgba(255,235,200,0.7);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; letter-spacing: 2px; color: #ffe9b8;
+  transform: rotate(-8deg);
+}
+.record-cover-title { font-size: 22px; letter-spacing: 10px; font-family: var(--font-serif); }
+.record-cover-hint { font-size: 12px; letter-spacing: 3px; opacity: 0.75; }
+
+#record-content.unfurl-in { animation: recordContentIn var(--dur-med) var(--ease-glass); }
+@keyframes recordContentIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 /* ---------------------------------------------------------- */
 /* HUD                                                          */
@@ -1694,6 +1747,94 @@ html, body {
 
 #loading-title { font-family: var(--font-serif); color: var(--gold-bright); letter-spacing: 4px; }
 #loading-line { color: #cf9fc0; font-size: 13px; min-height: 1.4em; }
+
+/* ---------------------------------------------------------- */
+/* 第一章・完 (chapter end card, over the whiteout transition)  */
+/* ---------------------------------------------------------- */
+
+#chapter-end {
+  position: absolute;
+  inset: 0;
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 1.4s ease;
+}
+#chapter-end.show { opacity: 1; }
+#chapter-end.hidden { display: none; }
+#chapter-end-title {
+  font-family: var(--font-serif);
+  font-size: clamp(32px, 6vw, 56px);
+  letter-spacing: 10px;
+  color: #6b5220;
+  text-shadow: 0 2px 24px rgba(217,184,119,0.4);
+}
+#chapter-end-hint {
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: #a8925a;
+  animation: bounceHint 1.4s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------- */
+/* CTA — 導流到正式遊戲                                         */
+/* ---------------------------------------------------------- */
+
+#cta-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 46;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(217,184,119,0.16) 0%, transparent 55%),
+    var(--cloud-white);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 0 24px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+#cta-screen.show { opacity: 1; }
+#cta-screen.hidden { display: none; }
+#cta-emblem {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1px solid rgba(217,184,119,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif);
+  font-size: 26px;
+  color: #6b5220;
+  margin-bottom: 6px;
+}
+#cta-title { font-family: var(--font-serif); color: #4a3413; font-size: 22px; letter-spacing: 4px; margin: 0; }
+#cta-copy { color: #7a5a3a; font-size: 15px; max-width: 420px; line-height: 1.7; margin: 0; }
+#cta-button {
+  margin-top: 14px;
+  display: inline-block;
+  padding: 15px 38px;
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+  color: #2c2008;
+  font-weight: 700;
+  letter-spacing: 2px;
+  border-radius: 30px;
+  text-decoration: none;
+  box-shadow: 0 10px 26px rgba(217,184,119,0.4);
+  transition: transform var(--dur-fast) var(--ease-glass), box-shadow var(--dur-fast) ease;
+  animation: ctaBreathe 3.2s ease-in-out infinite;
+}
+#cta-button:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 14px 32px rgba(217,184,119,0.55); }
+#cta-button:active { transform: translateY(-1px) scale(0.97); }
 
 /* ---------------------------------------------------------- */
 /* Responsive                                                   */

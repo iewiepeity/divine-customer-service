@@ -17,6 +17,8 @@ import { saveManager } from "./save.js";
 import { resultCard } from "./resultCard.js";
 import { hud } from "../ui/hud.js";
 import { SCROLL_ICON } from "../ui/icons.js";
+import { portrait } from "./portrait.js";
+import { interpolate } from "./variables.js";
 
 const SFX = {
   phoneRing: () => audio.phoneRing(),
@@ -63,6 +65,11 @@ export class Game {
       hud.show();
       hud.update(node.hud);
     }
+    if (node.portrait) {
+      portrait.show(node.portrait);
+    } else {
+      portrait.hide();
+    }
 
     switch (node.type) {
       case "dialogue":
@@ -82,6 +89,9 @@ export class Game {
         await this._doBackground(node);
         this._withIntro(node, () => {
           dialogueBox.hide();
+          // the gallery's own portrait stage takes over the spotlight —
+          // step 玉皇大帝 (or whoever narrated the intro) off-screen first
+          portrait.hide();
           gallery.reveal(node.chars, () => this.next(), { autoAdvance: node.autoAdvance });
         });
         break;
@@ -103,6 +113,7 @@ export class Game {
             if (opt.hud) hud.update(opt.hud);
             const proceed = () => {
               if (opt.resultCard) {
+                dialogueBox.hide();
                 resultCard.show(opt.resultCard, () => this.next());
               } else {
                 this.next();
@@ -116,6 +127,16 @@ export class Game {
             }
           });
         });
+        break;
+
+      case "chapterEnd":
+        await this._doBackground(node);
+        dialogueBox.hide();
+        this._showChapterEnd(node);
+        break;
+
+      case "cta":
+        this._showCta(node);
         break;
 
       case "end":
@@ -166,5 +187,30 @@ export class Game {
       [(node && node.endText) || "……待續。"],
       () => {}
     );
+  }
+
+  _showChapterEnd(node) {
+    hud.hide();
+    const el = document.getElementById("chapter-end");
+    const titleEl = document.getElementById("chapter-end-title");
+    titleEl.textContent = interpolate((node && node.title) || "第一章・完");
+    el.classList.remove("hidden");
+    requestAnimationFrame(() => el.classList.add("show"));
+    audio.stamp();
+    const onClick = () => {
+      el.removeEventListener("click", onClick);
+      el.classList.remove("show");
+      setTimeout(() => {
+        el.classList.add("hidden");
+        this.next();
+      }, 400);
+    };
+    el.addEventListener("click", onClick);
+  }
+
+  _showCta() {
+    const el = document.getElementById("cta-screen");
+    el.classList.remove("hidden");
+    requestAnimationFrame(() => el.classList.add("show"));
   }
 }

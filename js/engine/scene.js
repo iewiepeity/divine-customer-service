@@ -24,10 +24,17 @@ export class SceneManager {
     this.cloudFade = document.getElementById("cloud-fade");
     this.particleDissolve = document.getElementById("particle-dissolve");
     this.current = "bg-black";
+    this._lastDeco = "";
   }
 
   setDeco(html) {
-    this.decoLayer.innerHTML = html || "";
+    const next = html || "";
+    // Skip the DOM rewrite when the deco is unchanged (e.g. the same
+    // standing characters carry across consecutive nodes) so their
+    // entrance animations don't keep re-triggering on every node change.
+    if (this._lastDeco === next) return;
+    this._lastDeco = next;
+    this.decoLayer.innerHTML = next;
   }
 
   _swap(bgClass, deco) {
@@ -37,15 +44,18 @@ export class SceneManager {
   }
 
   /**
-   * transition: 'fade' | 'zoom' | 'light' | 'paper' | 'cloud' | 'particle' | 'none'
+   * transition: 'fade' | 'zoom' | 'light' | 'paper' | 'cloud' | 'particle' | 'whiteout' | 'none'
    */
   async change(bgClass, { transition = "fade", deco = "" } = {}) {
     if (prefersReducedMotion() && transition !== "none") {
-      this.overlay.classList.add("fade-out");
+      const overlayClass = transition === "whiteout" ? "fade-out-white" : "fade-out";
+      this.overlay.classList.add(overlayClass);
       await wait(120);
       this._swap(bgClass, deco);
-      await wait(120);
-      this.overlay.classList.remove("fade-out");
+      if (transition !== "whiteout") {
+        await wait(120);
+        this.overlay.classList.remove(overlayClass);
+      }
       return;
     }
 
@@ -93,6 +103,13 @@ export class SceneManager {
         this._swap(bgClass, deco);
         await wait(520);
         this.particleDissolve.classList.remove("active");
+        break;
+      }
+      case "whiteout": {
+        this.overlay.classList.add("fade-out-white");
+        await wait(1400);
+        this._swap(bgClass, deco);
+        // deliberately left white — this is the final beat of the chapter
         break;
       }
       case "none": {

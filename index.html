@@ -29,6 +29,14 @@
     <!-- ③ Interaction Layer (hotspots / character gallery / call record) -->
     <div id="interaction-layer"></div>
 
+    <!-- On-stage character portrait (e.g. 玉皇大帝) for dialogue scenes -->
+    <div id="stage-portrait" class="hidden" aria-hidden="true">
+      <div id="stage-portrait-particles">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div id="stage-portrait-img"></div>
+    </div>
+
     <!-- HUD -->
     <div id="hud">
       <button id="mute-btn" title="靜音／取消靜音"></button>
@@ -137,6 +145,20 @@
       <div id="loading-emblem">神</div>
       <div id="loading-title">神明客服中心</div>
       <div id="loading-line"></div>
+    </div>
+
+    <!-- 第一章・完 (chapter end card, shown over the whiteout transition) -->
+    <div id="chapter-end" class="hidden">
+      <div id="chapter-end-title">第一章・完</div>
+      <div id="chapter-end-hint">點擊繼續</div>
+    </div>
+
+    <!-- CTA — 導流到正式遊戲 -->
+    <div id="cta-screen" class="hidden">
+      <div id="cta-emblem">神</div>
+      <h2 id="cta-title">神明客服中心</h2>
+      <p id="cta-copy">想繼續體驗真正的神明客服生活嗎？</p>
+      <a id="cta-button" href="https://loveydovey.onelink.me/vs4G/ubytpuuo" target="_blank" rel="noopener noreferrer">前往卿卿我我開始遊戲</a>
     </div>
 
   </div>

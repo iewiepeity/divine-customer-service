@@ -6,8 +6,13 @@
 // ============================================================
 import { serviceSpirits } from "./characters.js";
 
-const HEAVEN_DECO = `<div class="throne-glow"></div><div class="god-figure"></div>`;
-const CASE_DECO = `<div class="phone-case-shape"></div>`;
+const YUHUANG = "assets/deities/yuhuangdadi.jpg";
+
+// 一號＝左／二號＝中／三號＝右，全劇固定不變（辦公室場景共用同一份 deco）
+const OFFICE_SPIRITS_DECO =
+  `<div class="office-spirit office-spirit-left" style="background-image:url('assets/characters/one.jpg')"></div>` +
+  `<div class="office-spirit office-spirit-center" style="background-image:url('assets/characters/two.jpg')"></div>` +
+  `<div class="office-spirit office-spirit-right" style="background-image:url('assets/characters/three.jpg')"></div>`;
 
 export const openingScript = [
   // ---------------------------------------------------------
@@ -100,17 +105,18 @@ export const openingScript = [
   },
 
   // ---------------------------------------------------------
-  // 玉皇大帝登場
+  // 玉皇大帝登場 — 桌面探索 → Fade/Light → 神界大殿
   // ---------------------------------------------------------
   {
     scene: "Scene_04",
     type: "dialogue",
     background: "bg-heaven",
     transition: "light",
-    deco: HEAVEN_DECO,
+    portrait: YUHUANG,
     lines: [
       "在你想通任何事情之前——",
       "眼前的畫面，忽然被一片金光吞沒。",
+      "金光散去時，你已經站在雲海之上的一座大殿正中央——神界最高議事廳。",
       { speaker: "玉皇大帝", text: "醒了？" },
       { speaker: "玉皇大帝", text: "別緊張，你沒有走錯地方——雖然也沒有走對地方就是了。" },
       { speaker: "玉皇大帝", text: "這裡是「神明客服中心」，負責處理天下所有祈願、投訴與催辦案件。" },
@@ -130,7 +136,7 @@ export const openingScript = [
     type: "callRecord",
     background: "bg-heaven-alert",
     transition: "fade",
-    deco: HEAVEN_DECO,
+    portrait: YUHUANG,
     introLines: [
       { speaker: "玉皇大帝", text: "這是你生前的來電紀錄，你自己翻翻看。" },
       "殿中央，一卷巨大的卷宗緩緩攤開。",
@@ -154,6 +160,7 @@ export const openingScript = [
     type: "choice",
     background: "bg-heaven",
     transition: "none",
+    portrait: YUHUANG,
     introLines: ["玉皇大帝闔上卷宗，意味深長地看著你。"],
     prompt: "玉皇大帝瞇起眼：「看得出來，你生前對客服流程十分熟悉。」",
     options: [
@@ -184,6 +191,7 @@ export const openingScript = [
     background: "bg-spotlight",
     transition: "particle",
     sfxOnEnter: "divinePower",
+    portrait: YUHUANG,
     introLines: [
       { speaker: "玉皇大帝", text: "接下來，讓你認識一下你的下屬。" },
       { speaker: "玉皇大帝", text: "他們不是人間招募來的員工，是本座親手創造的客服靈。" },
@@ -194,14 +202,30 @@ export const openingScript = [
   },
 
   // ---------------------------------------------------------
-  // 第一件案件送達
+  // 返回主管辦公室，客服靈站定位（玉皇大帝消失 → Fade → 辦公室）
   // ---------------------------------------------------------
   {
-    scene: "Scene_08",
+    scene: "Scene_08a",
     type: "dialogue",
-    background: "bg-case",
-    transition: "zoom",
-    deco: CASE_DECO,
+    background: "bg-office",
+    transition: "fade",
+    deco: OFFICE_SPIRITS_DECO,
+    lines: [
+      "大殿的金光漸漸沉靜下來，玉皇大帝的身影也隱入雲霧之中。",
+      "下一瞬間，眼前的景象已經換成了那張陌生的辦公桌——你回到了主管辦公室。",
+      "一號、二號、三號，已經穩穩站在你身邊，各自站定了位置。",
+    ],
+  },
+
+  // ---------------------------------------------------------
+  // 第一件案件送達，HUD 正式啟用（正式開始工作才顯示）
+  // ---------------------------------------------------------
+  {
+    scene: "Scene_08b",
+    type: "dialogue",
+    background: "bg-office",
+    transition: "none",
+    deco: OFFICE_SPIRITS_DECO,
     sfxOnEnter: "phoneRing",
     hud: {
       datetime: "週一　上午 09:00",
@@ -229,8 +253,9 @@ export const openingScript = [
   {
     scene: "Scene_09",
     type: "dispatchChoice",
-    background: "bg-case",
+    background: "bg-office",
     transition: "none",
+    deco: OFFICE_SPIRITS_DECO,
     sfxOnEnter: "vibrate",
     prompt: "這件案子，你打算派誰去處理？",
     options: [
@@ -348,18 +373,38 @@ export const openingScript = [
   },
 
   // ---------------------------------------------------------
-  // 開場結束
+  // 第一章結尾 — 電話又響，三人各說一句
   // ---------------------------------------------------------
   {
-    scene: "Scene_end",
-    type: "end",
-    background: "bg-case",
-    transition: "fade",
+    scene: "Scene_10",
+    type: "dialogue",
+    background: "bg-office",
+    transition: "none",
+    deco: OFFICE_SPIRITS_DECO,
+    sfxOnEnter: "phoneRing",
     lines: [
-      "案件編號 001，正式進入處理程序。",
-      "而你的第一天，才剛剛開始。",
+      { speaker: "一號", text: "主管，新的案件又進來了。" },
+      { speaker: "二號", text: "今天只是開始哦。" },
+      { speaker: "三號", text: "人間每天都有新的願望。" },
     ],
-    endTitle: "第一章・待續",
-    endText: "《神明客服中心》開場 Demo 到此結束。\n\n更多案件、更多客服靈、更多故事，敬請期待正式版本。",
+  },
+
+  // ---------------------------------------------------------
+  // 第一章・完
+  // ---------------------------------------------------------
+  {
+    scene: "Scene_chapterEnd",
+    type: "chapterEnd",
+    background: "bg-office",
+    transition: "whiteout",
+    title: "第一章・完",
+  },
+
+  // ---------------------------------------------------------
+  // CTA — 導流到正式遊戲
+  // ---------------------------------------------------------
+  {
+    scene: "Scene_cta",
+    type: "cta",
   },
 ];
