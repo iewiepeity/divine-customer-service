@@ -621,7 +621,7 @@ html, body {
 #modal-layer {
   position: absolute;
   inset: 0;
-  z-index: 70;
+  z-index: 120;
   background: rgba(20,8,18,0.68);
   display: flex;
   align-items: center;
@@ -760,7 +760,118 @@ html, body {
   background: rgba(255,173,214,0.15);
   transform: translateY(-2px);
 }
+#btn-roster {
+  border-style: dashed;
+  font-size: 13px;
+  opacity: 0.85;
+}
 .hidden { display: none !important; }
+
+/* ---------------------------------------------------------- */
+/* 神界部門名冊 (deity roster)                                  */
+/* ---------------------------------------------------------- */
+
+#roster-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 110;
+  background: rgba(10, 4, 10, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5vh 4vw;
+}
+
+#roster-panel {
+  width: min(1000px, 100%);
+  height: 100%;
+  max-height: 88vh;
+  background: linear-gradient(180deg, #2a1728, #170c1a);
+  border: 1px solid var(--ui-border);
+  border-radius: 16px;
+  padding: 22px 26px 26px;
+  box-shadow: 0 30px 90px rgba(0,0,0,0.7);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#roster-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+#roster-header h2 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 20px;
+  letter-spacing: 4px;
+  color: var(--pink-bright);
+}
+#roster-close {
+  background: none;
+  border: 1px solid var(--ui-border);
+  color: var(--pink-bright);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 15px;
+}
+#roster-close:hover { background: rgba(255,173,214,0.15); }
+
+#roster-grid {
+  flex: 1;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 16px;
+  padding-right: 4px;
+}
+
+.roster-card {
+  background: rgba(255,173,214,0.06);
+  border: 1px solid var(--ui-border);
+  border-radius: 12px;
+  padding: 10px;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.roster-card:hover {
+  transform: translateY(-4px);
+  background: rgba(255,173,214,0.14);
+}
+.roster-thumb {
+  width: 100%;
+  aspect-ratio: 3/4;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center 15%;
+  margin-bottom: 8px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+}
+.roster-name {
+  color: #fbeaf5;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.roster-dept {
+  color: #cf9fc0;
+  font-size: 11px;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
+#roster-layer.hidden { display: none; }
+
+@media (max-width: 640px) {
+  #roster-grid { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; }
+  #roster-panel { padding: 16px; }
+}
 
 /* ---------------------------------------------------------- */
 /* Responsive                                                   */
