@@ -6,7 +6,6 @@
 // ============================================================
 import { serviceSpirits } from "./characters.js";
 
-const DESK_DECO = `<div class="desk-shape"></div>`;
 const HEAVEN_DECO = `<div class="throne-glow"></div><div class="god-figure"></div>`;
 const CASE_DECO = `<div class="phone-case-shape"></div>`;
 
@@ -47,7 +46,6 @@ export const openingScript = [
     type: "explore",
     background: "bg-office",
     transition: "paper",
-    deco: DESK_DECO,
     introLines: ["你回過神時，已經坐在這張陌生的辦公桌前。", "桌上放著幾樣東西，看起來……都不像是人間的物品。"],
     items: [
       {
@@ -55,8 +53,8 @@ export const openingScript = [
         icon: "📱",
         image: "assets/items/nokia.png",
         label: "Nokia 3310",
-        x: 26,
-        y: 73,
+        x: 64,
+        y: 62,
         title: "Nokia 3310",
         pages: ["神機。\n\n永不沒電。\n永不損壞。\n\n——不得關機。"],
       },
@@ -66,7 +64,7 @@ export const openingScript = [
         image: "assets/items/badge.jpg",
         label: "識別證",
         x: 42,
-        y: 69,
+        y: 65,
         title: "識別證",
         pages: ["主管\n\n員工編號：\n尚未登錄"],
       },
@@ -75,8 +73,8 @@ export const openingScript = [
         icon: "📁",
         image: "assets/items/docs.jpg",
         label: "文件",
-        x: 58,
-        y: 73,
+        x: 14,
+        y: 50,
         title: "文件",
         pages: [
           "（第一頁）\n公文卷宗，封面蓋著「機密文件　妥善保管」的硃紅印章。\n案件編號：SK-2024-05-00187\n案件類別：人間祈願相關事務",
@@ -89,8 +87,8 @@ export const openingScript = [
         icon: "💊",
         image: "assets/items/meds.jpg",
         label: "藥袋",
-        x: 74,
-        y: 76,
+        x: 88,
+        y: 60,
         title: "藥袋",
         pages: [
           "一個粉紅色小藥袋，貼紙上畫著一隻捧著仙丹的兔子，寫著：「天庭衛生所　敬贈」。",
