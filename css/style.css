@@ -304,6 +304,14 @@ html, body {
   transition: transform 0.2s ease, background 0.2s ease;
 }
 
+.hotspot .icon.has-image {
+  width: 2.4em;
+  height: 2.4em;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 .hotspot .label {
   font-size: 13px;
   color: var(--pink-bright);

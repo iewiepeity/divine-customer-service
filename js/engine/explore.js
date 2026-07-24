@@ -17,7 +17,7 @@ export class ExploreLayer {
   }
 
   /**
-   * items: [{ id, icon, label, x, y, title, pages }]  x/y in % of screen
+   * items: [{ id, icon, image, label, x, y, title, pages }]  x/y in % of screen
    * opts.autoAdvance: skip the Continue button and call onComplete immediately
    *   once everything has been viewed
    * opts.continueLabel: text for the continue button
@@ -40,7 +40,19 @@ export class ExploreLayer {
       btn.className = "hotspot";
       btn.style.left = item.x + "%";
       btn.style.top = item.y + "%";
-      btn.innerHTML = `<div class="icon">${item.icon}</div><div class="label">${item.label}</div>`;
+      const icon = document.createElement("div");
+      icon.className = "icon";
+      if (item.image) {
+        icon.classList.add("has-image");
+        icon.style.backgroundImage = `url("${item.image}")`;
+      } else {
+        icon.textContent = item.icon || "";
+      }
+      const label = document.createElement("div");
+      label.className = "label";
+      label.textContent = item.label;
+      btn.appendChild(icon);
+      btn.appendChild(label);
       btn.addEventListener("mouseenter", () => audio.hover());
       btn.addEventListener("click", () => this._inspect(item, btn));
       this.layer.appendChild(btn);
@@ -62,21 +74,26 @@ export class ExploreLayer {
   _inspect(item, btn) {
     audio.click();
     const pages = typeof item.pages === "function" ? item.pages() : item.pages;
-    modal.open(item.title, pages, () => {
-      this.visited.add(item.id);
-      btn.classList.add("visited");
-      const badge = document.getElementById("explore-progress");
-      if (badge) badge.textContent = `查看物件 ${this.visited.size} / ${this.items.length}`;
-      if (this.visited.size >= this.items.length) {
-        if (this.autoAdvance) {
-          this.clear();
-          if (this.onComplete) this.onComplete();
-        } else {
-          const cont = document.getElementById("explore-continue");
-          if (cont) cont.classList.add("show");
+    modal.open(
+      item.title,
+      pages,
+      () => {
+        this.visited.add(item.id);
+        btn.classList.add("visited");
+        const badge = document.getElementById("explore-progress");
+        if (badge) badge.textContent = `查看物件 ${this.visited.size} / ${this.items.length}`;
+        if (this.visited.size >= this.items.length) {
+          if (this.autoAdvance) {
+            this.clear();
+            if (this.onComplete) this.onComplete();
+          } else {
+            const cont = document.getElementById("explore-continue");
+            if (cont) cont.classList.add("show");
+          }
         }
-      }
-    });
+      },
+      { image: item.image }
+    );
   }
 
   clear() {

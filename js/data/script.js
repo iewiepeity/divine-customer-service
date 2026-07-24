@@ -53,6 +53,7 @@ export const openingScript = [
       {
         id: "nokia",
         icon: "📱",
+        image: "assets/items/nokia.png",
         label: "Nokia 3310",
         x: 26,
         y: 73,
@@ -62,6 +63,7 @@ export const openingScript = [
       {
         id: "badge",
         icon: "📛",
+        image: "assets/items/badge.jpg",
         label: "識別證",
         x: 42,
         y: 69,
@@ -71,25 +73,27 @@ export const openingScript = [
       {
         id: "docs",
         icon: "📁",
+        image: "assets/items/docs.jpg",
         label: "文件",
         x: 58,
         y: 73,
         title: "文件",
         pages: [
-          "（第一頁）\n密密麻麻的行政條文，一個字都看不懂。",
-          "（第二頁）\n依然看不懂，上面蓋滿了各種奇怪的硃紅印章。",
+          "（第一頁）\n公文卷宗，封面蓋著「機密文件　妥善保管」的硃紅印章。\n案件編號：SK-2024-05-00187\n案件類別：人間祈願相關事務",
+          "（第二頁）\n密密麻麻的行政條文，一個字都看不懂，下方還有「綜合受理部　核章」的圓戳。",
           "（最後一頁）\n你決定，等等再看。",
         ],
       },
       {
         id: "meds",
         icon: "💊",
+        image: "assets/items/meds.jpg",
         label: "藥袋",
         x: 74,
         y: 76,
         title: "藥袋",
         pages: [
-          "一個粉紅色小藥袋，上面貼著可愛貼紙：「天庭衛生所　敬贈」。",
+          "一個粉紅色小藥袋，貼紙上畫著一隻捧著仙丹的兔子，寫著：「天庭衛生所　敬贈」。",
           "警語欄手寫著：「服用後可能出現遺忘、放空、突然很想睡等症狀（其實就是孟婆湯的效果）。」",
           "內容物：七顆糖果狀的『忘塵丸』，附註——\n「本季孟婆湯預算被砍了，改發這個，一樣有效，請見諒 🙏」",
         ],
