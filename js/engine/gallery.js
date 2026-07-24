@@ -12,7 +12,7 @@ export class Gallery {
   }
 
   /**
-   * chars: [{ id, slotClass, icon, tag, name, height, feature, personality, skill }]
+   * chars: [{ id, slotClass, icon, tag, name, image, appearance, personality, skill, weakness }]
    * onComplete fires once every card has been opened at least once.
    */
   reveal(chars, onComplete, opts = {}) {
@@ -22,31 +22,46 @@ export class Gallery {
     chars.forEach((c, i) => {
       const slot = document.createElement("div");
       slot.className = `char-slot ${c.slotClass}`;
-      slot.innerHTML = `
-        <div class="char-figure">${c.icon || ""}</div>
-        <div class="char-tag">${c.tag}</div>
-      `;
+      const figure = document.createElement("div");
+      figure.className = "char-figure";
+      if (c.image) {
+        figure.style.backgroundImage = `url("${c.image}")`;
+        figure.style.backgroundSize = "cover";
+        figure.style.backgroundPosition = "center 18%";
+      } else {
+        figure.textContent = c.icon || "";
+      }
+      const tag = document.createElement("div");
+      tag.className = "char-tag";
+      tag.textContent = c.tag;
+      slot.appendChild(figure);
+      slot.appendChild(tag);
       slot.addEventListener("mouseenter", () => audio.hover());
       slot.addEventListener("click", () => {
         audio.click();
         const body =
           `姓名：${c.name}\n` +
-          `身高：${c.height}\n` +
-          `特徵：${c.feature}\n` +
+          `外貌：${c.appearance}\n` +
           `性格：${c.personality}\n` +
-          `擅長：${c.skill}`;
-        modal.open(c.name, [body], () => {
-          visited.add(c.id);
-          if (visited.size >= chars.length) {
-            if (opts.autoAdvance) {
-              this.clear();
-              if (onComplete) onComplete();
-            } else {
-              const cont = document.getElementById("explore-continue");
-              if (cont) cont.classList.add("show");
+          `擅長：${c.skill}\n` +
+          `缺點：${c.weakness}`;
+        modal.open(
+          c.name,
+          [body],
+          () => {
+            visited.add(c.id);
+            if (visited.size >= chars.length) {
+              if (opts.autoAdvance) {
+                this.clear();
+                if (onComplete) onComplete();
+              } else {
+                const cont = document.getElementById("explore-continue");
+                if (cont) cont.classList.add("show");
+              }
             }
-          }
-        });
+          },
+          { image: c.image }
+        );
       });
       this.layer.appendChild(slot);
 

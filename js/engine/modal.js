@@ -7,6 +7,7 @@ import { audio } from "./audio.js";
 export class Modal {
   constructor() {
     this.layer = document.getElementById("modal-layer");
+    this.imageEl = document.getElementById("modal-image");
     this.titleEl = document.getElementById("modal-title");
     this.bodyEl = document.getElementById("modal-body");
     this.navEl = document.getElementById("modal-nav");
@@ -30,9 +31,17 @@ export class Modal {
   /**
    * title: string
    * pages: string[] (one or more pages of body text)
+   * opts.image: optional portrait/illustration URL shown above the title
    */
-  open(title, pages, onClose) {
+  open(title, pages, onClose, opts = {}) {
     audio.pageTurn();
+    if (opts.image) {
+      this.imageEl.src = opts.image;
+      this.imageEl.classList.remove("hidden");
+    } else {
+      this.imageEl.removeAttribute("src");
+      this.imageEl.classList.add("hidden");
+    }
     this.titleEl.textContent = title;
     this.pages = Array.isArray(pages) ? pages : [pages];
     this.pageIndex = 0;

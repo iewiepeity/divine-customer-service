@@ -183,17 +183,7 @@ export const openingScript = [
       "殿內光線一沉。",
       "三道金光，緩緩落下。",
     ],
-    chars: serviceSpirits.map((c) => ({
-      id: c.id,
-      slotClass: c.slotClass,
-      icon: c.icon,
-      tag: c.tag,
-      name: c.name,
-      height: c.height,
-      feature: c.feature,
-      personality: c.personality,
-      skill: c.skill,
-    })),
+    chars: serviceSpirits,
   },
 
   // ---------------------------------------------------------
@@ -238,25 +228,26 @@ export const openingScript = [
       {
         label: "派遣一號",
         response: [
-          "一號額頭上的電話圖示瘋狂閃爍，整個人已經衝了出去。",
-          { speaker: "一號", text: "包在我身上！絕對讓她多睡到！" },
-          { speaker: "玉皇大帝", text: "……他好像沒聽完案情。" },
+          "一號戴上黑手套，抽出一份表單，開始逐條核對案件流程。",
+          { speaker: "一號", text: "睡眠請求案件，依規定須先確認陳情人作息紀錄、鬧鐘型號與敲擊力道分佈圖。" },
+          { speaker: "玉皇大帝", text: "……她會先花三小時把文件填完，再花五分鐘解決問題。" },
         ],
       },
       {
         label: "派遣二號",
         response: [
-          "二號翻開手中的《天界服務條款》，眼神銳利。",
-          { speaker: "二號", text: "根據第九條第三項，睡眠請求需先確認陳情人作息紀錄……" },
-          { speaker: "玉皇大帝", text: "……他會先花三小時看條文。" },
+          "二號晃著手中的手搖飲，接起粉色 Nokia，另一手已經在跟林小姐搏感情。",
+          { speaker: "二號", text: "姊～我懂我懂，鬧鐘這種東西真的很煩對不對？來，跟我說說你昨天幾點睡的？" },
+          { speaker: "玉皇大帝", text: "……才十秒，對方已經加他為好友了。" },
         ],
       },
       {
         label: "派遣三號",
         response: [
-          "三號面無表情地點了點頭，轉身就走，沒有多說一句話。",
-          "沒有人知道他打算怎麼做。",
-          { speaker: "玉皇大帝", text: "……安靜的案子，交給他最安心。" },
+          "三號歪著頭想了想，肩上的小烏龜也跟著歪頭。",
+          { speaker: "三號", text: "多睡十分鐘……那把她的鬧鐘調慢十分鐘不就好了？" },
+          "沒有人來得及阻止他，他已經帶著烏龜衝出大殿。",
+          { speaker: "玉皇大帝", text: "……我開始後悔了。" },
         ],
       },
     ],

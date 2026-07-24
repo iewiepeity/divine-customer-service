@@ -402,9 +402,14 @@ html, body {
 }
 .char-slot.show .char-tag { opacity: 1; }
 
-.char-1 { left: 24%; color: rgba(255,180,190,0.9); background: linear-gradient(160deg, #ffd1d9, #ff8fa3); }
-.char-2 { left: 50%; color: rgba(190,180,255,0.9); background: linear-gradient(160deg, #d6c8ff, #9b8ae0); }
+.char-1 { left: 24%; color: rgba(255,214,140,0.9); background: linear-gradient(160deg, #ffe9b8, #dcae5e); }
+.char-2 { left: 50%; color: rgba(255,150,190,0.9); background: linear-gradient(160deg, #ffd1d9, #ff8fa3); }
 .char-3 { left: 76%; color: rgba(170,240,210,0.9); background: linear-gradient(160deg, #c8ffe6, #7fe0b8); }
+
+.char-figure {
+  background-color: rgba(20,10,20,0.4);
+  background-repeat: no-repeat;
+}
 
 /* Call record paging widget */
 #record-panel {
@@ -637,6 +642,19 @@ html, body {
   from { opacity: 0; transform: scale(0.92) translateY(10px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
+
+#modal-image {
+  display: block;
+  width: 100%;
+  max-height: 46vh;
+  object-fit: cover;
+  object-position: center 15%;
+  border-radius: 10px;
+  border: 1px solid var(--ui-border);
+  margin-bottom: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+}
+#modal-image.hidden { display: none; }
 
 #modal-title {
   color: var(--pink-bright);
