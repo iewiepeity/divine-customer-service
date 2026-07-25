@@ -40,6 +40,16 @@ export class Hud {
     setTimeout(() => this.el.classList.add("hidden"), 720);
   }
 
+  /** Immediate teardown for a replay — no fade, and the counters are
+   *  dropped so the next run doesn't inherit the previous one's state. */
+  reset() {
+    if (!this.el) return;
+    this.visible = false;
+    this.state = null;
+    this.el.classList.remove("show");
+    this.el.classList.add("hidden");
+  }
+
   update(partial) {
     if (!partial) return;
     this.state = { ...(this.state || {}), ...partial };

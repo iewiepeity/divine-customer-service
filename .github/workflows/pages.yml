@@ -2,11 +2,6 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    # The `github-pages` environment only accepts deployments from the
-    # repository's default branch, which is currently the claude/* branch
-    # rather than main. Both are kept at the same commit, so triggering on
-    # either one deploys the same site — and this keeps working if the
-    # default branch is switched to main later.
     branches:
       - main
       - claude/divine-customer-service-game-nqsmj9
@@ -24,11 +19,16 @@ concurrency:
 
 jobs:
   deploy:
-    # Only the default branch is allowed to deploy to the github-pages
-    # environment, so a push to any other branch skips cleanly instead of
-    # failing. Reading the default branch from the event means this keeps
-    # working if it is switched to main later.
-    if: github.ref_name == github.event.repository.default_branch
+    # The github-pages environment carries its own list of branches that
+    # are allowed to deploy, fixed when Pages was first enabled — it is
+    # NOT the repository's current default branch. A push from any other
+    # branch is rejected before the job starts, so we gate on the branch
+    # the environment actually accepts and let the rest skip cleanly.
+    #
+    # To deploy from main instead, add main under
+    # Settings → Environments → github-pages → Deployment branches,
+    # then change this to 'main'.
+    if: github.ref_name == 'claude/divine-customer-service-game-nqsmj9'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

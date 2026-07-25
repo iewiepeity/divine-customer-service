@@ -2210,7 +2210,8 @@ html, body {
 #cta-screen.show .ending-rule { animation-delay: 0.45s; }
 #cta-screen.show #cta-copy { animation-delay: 0.55s; }
 #cta-screen.show #cta-button { animation-delay: 0.7s; }
-#cta-screen.show #cta-tagline { animation-delay: 0.9s; }
+#cta-screen.show #cta-replay { animation-delay: 0.85s; }
+#cta-screen.show #cta-tagline { animation-delay: 1s; }
 
 #cta-emblem {
   width: 70px;
@@ -2274,6 +2275,28 @@ html, body {
 }
 #cta-button:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 14px 32px rgba(217,184,119,0.55); }
 #cta-button:active { transform: translateY(-1px) scale(0.97); }
+/* Secondary to the store link — available, but never competing with it */
+#cta-replay {
+  margin-top: 14px;
+  padding: 9px 24px;
+  background: transparent;
+  border: 1px solid rgba(176, 140, 66, 0.45);
+  border-radius: 30px;
+  color: #8a6a2e;
+  font-family: var(--font-serif);
+  font-size: 13px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background var(--dur-fast) ease, border-color var(--dur-fast) ease,
+    transform var(--dur-fast) var(--ease-glass);
+}
+#cta-replay:hover {
+  background: rgba(217, 184, 119, 0.16);
+  border-color: rgba(176, 140, 66, 0.75);
+  transform: translateY(-2px);
+}
+#cta-replay:active { transform: translateY(0) scale(0.97); }
+
 #cta-tagline {
   margin: 14px 0 0;
   font-family: var(--font-serif);

@@ -44,6 +44,31 @@ export class Game {
     this._run();
   }
 
+  /**
+   * Tear the playthrough down so the title screen can start a fresh one.
+   * Everything a finished run leaves behind — the whiteout, the ending
+   * screens, the HUD counters, whatever is on the interaction layer —
+   * has to go, or the replay inherits it.
+   */
+  reset() {
+    this.index = 0;
+    this.lastSceneLabel = null;
+    dialogueBox.hide();
+    portrait.hide();
+    hud.reset();
+    scene.reset();
+    document.getElementById("hud").classList.add("hidden");
+    document.getElementById("interaction-layer").innerHTML = "";
+    document.getElementById("result-layer").classList.add("hidden");
+    document.getElementById("choice-layer").classList.add("hidden");
+    document.getElementById("modal-layer").classList.add("hidden");
+    for (const id of ["chapter-end", "cta-screen"]) {
+      const el = document.getElementById(id);
+      el.classList.remove("show");
+      el.classList.add("hidden");
+    }
+  }
+
   _run() {
     if (this.index >= this.nodes.length) {
       this._end();

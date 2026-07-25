@@ -2218,7 +2218,8 @@ html, body {
 #cta-screen.show .ending-rule { animation-delay: 0.45s; }
 #cta-screen.show #cta-copy { animation-delay: 0.55s; }
 #cta-screen.show #cta-button { animation-delay: 0.7s; }
-#cta-screen.show #cta-tagline { animation-delay: 0.9s; }
+#cta-screen.show #cta-replay { animation-delay: 0.85s; }
+#cta-screen.show #cta-tagline { animation-delay: 1s; }
 
 #cta-emblem {
   width: 70px;
@@ -2282,6 +2283,28 @@ html, body {
 }
 #cta-button:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 14px 32px rgba(217,184,119,0.55); }
 #cta-button:active { transform: translateY(-1px) scale(0.97); }
+/* Secondary to the store link — available, but never competing with it */
+#cta-replay {
+  margin-top: 14px;
+  padding: 9px 24px;
+  background: transparent;
+  border: 1px solid rgba(176, 140, 66, 0.45);
+  border-radius: 30px;
+  color: #8a6a2e;
+  font-family: var(--font-serif);
+  font-size: 13px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background var(--dur-fast) ease, border-color var(--dur-fast) ease,
+    transform var(--dur-fast) var(--ease-glass);
+}
+#cta-replay:hover {
+  background: rgba(217, 184, 119, 0.16);
+  border-color: rgba(176, 140, 66, 0.75);
+  transform: translateY(-2px);
+}
+#cta-replay:active { transform: translateY(0) scale(0.97); }
+
 #cta-tagline {
   margin: 14px 0 0;
   font-family: var(--font-serif);
@@ -2543,6 +2566,7 @@ html, body {
         <div class="ending-rule" aria-hidden="true"><span></span><i></i><span></span></div>
         <p id="cta-copy">想繼續體驗真正的神明客服生活嗎？</p>
         <a id="cta-button" href="https://loveydovey.onelink.me/vs4G/ubytpuuo" target="_blank" rel="noopener noreferrer">前往卿卿我我開始遊戲</a>
+        <button id="cta-replay">重新遊玩序章</button>
         <p id="cta-tagline">每一個願望，都值得被聽見。</p>
       </div>
     </div>
@@ -2862,6 +2886,24 @@ class SceneManager {
     this.bgLayer.className = bgClass;
     this.current = bgClass;
     if (deco !== undefined) this.setDeco(deco);
+  }
+
+  /**
+   * Clear every transition overlay and return to the opening black.
+   * The whiteout in particular is deliberately left on screen at the end
+   * of a run, so a replay has to wipe it or the next scene starts white.
+   */
+  reset() {
+    this.overlay.classList.remove("fade-out", "fade-out-white");
+    this.lightFlash.classList.remove("flash");
+    this.paperWipe.classList.remove("wipe");
+    this.cloudFade.classList.remove("active");
+    this.particleDissolve.classList.remove("active");
+    this.bgLayer.classList.remove("zoom");
+    this._lastDeco = "";
+    this.decoLayer.innerHTML = "";
+    this.bgLayer.className = "bg-black";
+    this.current = "bg-black";
   }
 
   /**
@@ -3751,6 +3793,16 @@ class Hud {
     setTimeout(() => this.el.classList.add("hidden"), 720);
   }
 
+  /** Immediate teardown for a replay — no fade, and the counters are
+   *  dropped so the next run doesn't inherit the previous one's state. */
+  reset() {
+    if (!this.el) return;
+    this.visible = false;
+    this.state = null;
+    this.el.classList.remove("show");
+    this.el.classList.add("hidden");
+  }
+
   update(partial) {
     if (!partial) return;
     this.state = { ...(this.state || {}), ...partial };
@@ -4407,6 +4459,31 @@ class Game {
     this._run();
   }
 
+  /**
+   * Tear the playthrough down so the title screen can start a fresh one.
+   * Everything a finished run leaves behind — the whiteout, the ending
+   * screens, the HUD counters, whatever is on the interaction layer —
+   * has to go, or the replay inherits it.
+   */
+  reset() {
+    this.index = 0;
+    this.lastSceneLabel = null;
+    dialogueBox.hide();
+    portrait.hide();
+    hud.reset();
+    scene.reset();
+    document.getElementById("hud").classList.add("hidden");
+    document.getElementById("interaction-layer").innerHTML = "";
+    document.getElementById("result-layer").classList.add("hidden");
+    document.getElementById("choice-layer").classList.add("hidden");
+    document.getElementById("modal-layer").classList.add("hidden");
+    for (const id of ["chapter-end", "cta-screen"]) {
+      const el = document.getElementById(id);
+      el.classList.remove("show");
+      el.classList.add("hidden");
+    }
+  }
+
   _run() {
     if (this.index >= this.nodes.length) {
       this._end();
@@ -4766,6 +4843,17 @@ btnContinue.addEventListener("click", () => {
   const data = saveManager.load();
   if (data && data.nickname) setVar("nickname", data.nickname);
   launch(data && typeof data.nodeIndex === "number" ? data.nodeIndex : 0);
+});
+
+// 重新遊玩 — from the closing CTA, back to the title screen for another run.
+// The save is dropped because it points at the ending; continuing into a
+// finished run would just drop the player back on this same screen.
+document.getElementById("cta-replay").addEventListener("click", () => {
+  audio.click();
+  game.reset();
+  saveManager.clear();
+  refreshContinueState();
+  titleScreen.classList.remove("hidden");
 });
 
 </script>

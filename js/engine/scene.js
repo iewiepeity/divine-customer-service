@@ -44,6 +44,24 @@ export class SceneManager {
   }
 
   /**
+   * Clear every transition overlay and return to the opening black.
+   * The whiteout in particular is deliberately left on screen at the end
+   * of a run, so a replay has to wipe it or the next scene starts white.
+   */
+  reset() {
+    this.overlay.classList.remove("fade-out", "fade-out-white");
+    this.lightFlash.classList.remove("flash");
+    this.paperWipe.classList.remove("wipe");
+    this.cloudFade.classList.remove("active");
+    this.particleDissolve.classList.remove("active");
+    this.bgLayer.classList.remove("zoom");
+    this._lastDeco = "";
+    this.decoLayer.innerHTML = "";
+    this.bgLayer.className = "bg-black";
+    this.current = "bg-black";
+  }
+
+  /**
    * transition: 'fade' | 'zoom' | 'light' | 'paper' | 'cloud' | 'particle' | 'whiteout' | 'none'
    */
   async change(bgClass, { transition = "fade", deco = "" } = {}) {

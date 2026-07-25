@@ -188,3 +188,14 @@ btnContinue.addEventListener("click", () => {
   if (data && data.nickname) setVar("nickname", data.nickname);
   launch(data && typeof data.nodeIndex === "number" ? data.nodeIndex : 0);
 });
+
+// 重新遊玩 — from the closing CTA, back to the title screen for another run.
+// The save is dropped because it points at the ending; continuing into a
+// finished run would just drop the player back on this same screen.
+document.getElementById("cta-replay").addEventListener("click", () => {
+  audio.click();
+  game.reset();
+  saveManager.clear();
+  refreshContinueState();
+  titleScreen.classList.remove("hidden");
+});
