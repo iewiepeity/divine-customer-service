@@ -19,16 +19,12 @@ concurrency:
 
 jobs:
   deploy:
-    # The github-pages environment carries its own list of branches that
-    # are allowed to deploy, fixed when Pages was first enabled — it is
-    # NOT the repository's current default branch. A push from any other
-    # branch is rejected before the job starts, so we gate on the branch
-    # the environment actually accepts and let the rest skip cleanly.
-    #
-    # To deploy from main instead, add main under
-    # Settings → Environments → github-pages → Deployment branches,
-    # then change this to 'main'.
-    if: github.ref_name == 'claude/divine-customer-service-game-nqsmj9'
+    # main is both the default branch and an allowed deployment branch on
+    # the github-pages environment. That environment allowlist is separate
+    # from the repository default and does not follow it, so this is
+    # pinned to a branch name rather than derived from the event — the
+    # allowlist has to be updated alongside any change here.
+    if: github.ref_name == 'main'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
