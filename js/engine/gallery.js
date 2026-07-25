@@ -34,27 +34,29 @@ export class Gallery {
     const wrap = document.createElement("div");
     wrap.className = "char-intro";
     wrap.innerHTML = `
-      <button class="char-nav char-nav-prev" aria-label="上一位客服靈"><span></span></button>
-      <div class="char-intro-stage">
-        <div class="char-intro-portrait">
-          <div class="char-intro-portrait-img"></div>
-        </div>
-        <div class="char-intro-info">
-          <div class="char-intro-tag"></div>
-          <h2 class="char-intro-name"></h2>
-          <div class="char-intro-meta">
-            <span class="char-intro-age"></span>
-            <span class="char-intro-height"></span>
+      <div class="char-intro-row">
+        <button class="char-nav char-nav-prev" aria-label="上一位客服靈"><span></span></button>
+        <div class="char-intro-stage">
+          <div class="char-intro-portrait">
+            <div class="char-intro-portrait-img"></div>
           </div>
-          <dl class="char-intro-fields">
-            <dt>性格</dt><dd class="f-personality"></dd>
-            <dt>擅長</dt><dd class="f-skill"></dd>
-            <dt>缺點</dt><dd class="f-weakness"></dd>
-          </dl>
-          <div class="char-intro-quote"></div>
+          <div class="char-intro-info">
+            <div class="char-intro-tag"></div>
+            <h2 class="char-intro-name"></h2>
+            <div class="char-intro-meta">
+              <span class="char-intro-age"></span>
+              <span class="char-intro-height"></span>
+            </div>
+            <dl class="char-intro-fields">
+              <dt>性格</dt><dd class="f-personality"></dd>
+              <dt>擅長</dt><dd class="f-skill"></dd>
+              <dt>缺點</dt><dd class="f-weakness"></dd>
+            </dl>
+            <div class="char-intro-quote"></div>
+          </div>
         </div>
+        <button class="char-nav char-nav-next" aria-label="下一位客服靈"><span></span></button>
       </div>
-      <button class="char-nav char-nav-next" aria-label="下一位客服靈"><span></span></button>
       <div class="char-intro-dots"></div>
     `;
     this.layer.appendChild(wrap);
@@ -83,13 +85,16 @@ export class Gallery {
     if (!opts.autoAdvance) {
       const cont = document.createElement("button");
       cont.id = "explore-continue";
+      cont.className = "gallery-continue";
       cont.textContent = "繼續";
       cont.addEventListener("click", () => {
         audio.click();
         this.clear();
         if (onComplete) onComplete();
       });
-      wrap.appendChild(cont);
+      // sits on the layer, not inside the card, so it can never
+      // overlap the character's text
+      this.layer.appendChild(cont);
     }
   }
 

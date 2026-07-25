@@ -191,6 +191,8 @@ export class Game {
 
   _showChapterEnd(node) {
     hud.hide();
+    // the chapter card and the CTA are a clean curtain call — no chrome
+    document.getElementById("hud").classList.add("hidden");
     const el = document.getElementById("chapter-end");
     const titleEl = document.getElementById("chapter-end-title");
     titleEl.textContent = interpolate((node && node.title) || "第一章・完");
@@ -209,6 +211,8 @@ export class Game {
   }
 
   _showCta() {
+    hud.hide();
+    document.getElementById("hud").classList.add("hidden");
     const el = document.getElementById("cta-screen");
     el.classList.remove("hidden");
     requestAnimationFrame(() => el.classList.add("show"));

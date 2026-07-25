@@ -18,6 +18,15 @@
   --gold-bright: #f3dea3;
   --ink: #1a0f22;
   --ink-glass: rgba(30, 18, 34, 0.62);
+  /* Feathering for standing character art. The illustrations carry their
+     own painted backgrounds, so without this they read as photos pasted
+     onto the scene. Two linear passes soften the sides/top/bottom and the
+     radial pass takes the corners, where the linears would otherwise
+     multiply out to nearly opaque. Combined with mask-composite. */
+  --art-feather:
+    linear-gradient(to bottom, transparent 0%, #000 14%, #000 72%, rgba(0,0,0,0.45) 90%, transparent 100%),
+    linear-gradient(to right, transparent 0%, #000 11%, #000 89%, transparent 100%),
+    radial-gradient(118% 106% at 50% 60%, #000 58%, rgba(0,0,0,0.4) 84%, transparent 100%);
   --soft-grey: #a9a0ab;
   --glass-border: rgba(243, 222, 163, 0.45);
   --glass-border-strong: rgba(243, 222, 163, 0.75);
@@ -165,10 +174,13 @@ html, body {
   transform: translateX(-100%);
   pointer-events: none;
   z-index: 41;
-  box-shadow: 8px 0 30px rgba(0,0,0,0.4);
 }
+/* The leading-edge shadow only exists while the wipe is travelling.
+   Left on permanently it bleeds off the parked element and smudges the
+   left edge of every scene in the game. */
 #paper-wipe.wipe {
   animation: paperWipe 1s ease;
+  box-shadow: 8px 0 30px rgba(0,0,0,0.4);
 }
 @keyframes paperWipe {
   0% { transform: translateX(-105%); }
@@ -260,12 +272,19 @@ html, body {
 .office-spirit {
   position: absolute;
   bottom: 0;
-  width: min(24vw, 280px);
-  height: 64%;
-  background-size: contain;
+  /* fitted to the 3:4 artwork so the feathering below lands on the
+     illustration's real edges (see #stage-portrait for the rationale) */
+  aspect-ratio: 3 / 4;
+  height: min(64%, calc(min(24vw, 280px) * 4 / 3));
+  width: auto;
+  background-size: cover;
   background-position: bottom center;
   background-repeat: no-repeat;
   filter: drop-shadow(0 22px 30px rgba(0,0,0,0.5));
+  -webkit-mask-image: var(--art-feather);
+  -webkit-mask-composite: source-in;
+  mask-image: var(--art-feather);
+  mask-composite: intersect;
   opacity: 0;
 }
 .office-spirit-left { left: 4%; animation: officeSpiritInSide 0.7s var(--ease-glass) 0.1s forwards; }
@@ -284,24 +303,49 @@ html, body {
   to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-/* On-stage character portrait for dialogue-driven scenes (e.g. 玉皇大帝) */
+/* On-stage character portrait for dialogue-driven scenes (e.g. 玉皇大帝).
+   Sized against the viewport height as well as its width so it can
+   never run off the top of a short/landscape screen. */
 #stage-portrait {
   position: absolute;
-  right: 5%;
-  bottom: 160px;
-  width: min(30vw, 380px);
-  height: min(60vh, 600px);
+  right: 4%;
+  bottom: clamp(118px, 20vh, 200px);
+  /* Every portrait is 3:4, so the box is fitted to that ratio inside the
+     width/height budget. A box that matched the budget instead would
+     leave dead space the edge-feathering mask couldn't reach, leaving a
+     hard rectangular seam across the artwork. */
+  --pw: min(30vw, 380px);
+  --ph: min(58vh, 560px);
+  width: min(var(--pw), calc(var(--ph) * 3 / 4));
+  height: min(var(--ph), calc(var(--pw) * 4 / 3));
   z-index: 8;
   pointer-events: none;
 }
 #stage-portrait.hidden { display: none; }
+/* warm halo so the art sits in the scene instead of on top of it */
+#stage-portrait::before {
+  content: "";
+  position: absolute;
+  inset: -4% -12% -6%;
+  background: radial-gradient(ellipse at 50% 58%, rgba(255, 234, 186, 0.34) 0%, transparent 70%);
+  filter: blur(12px);
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+#stage-portrait.portrait-enter::before { opacity: 1; }
 #stage-portrait-img {
   position: absolute;
   inset: 0;
-  background-size: contain;
+  background-size: cover;
   background-position: bottom center;
   background-repeat: no-repeat;
-  filter: drop-shadow(0 30px 40px rgba(0,0,0,0.55));
+  filter: drop-shadow(0 24px 36px rgba(0, 0, 0, 0.5));
+  /* feather every edge of the illustration's own background so it reads
+     as a character on stage, not a pasted rectangle */
+  -webkit-mask-image: var(--art-feather);
+  -webkit-mask-composite: source-in;
+  mask-image: var(--art-feather);
+  mask-composite: intersect;
   opacity: 0;
   transform: scale(0.92) translateY(16px);
 }
@@ -342,8 +386,23 @@ html, body {
 #stage-portrait-particles span:nth-child(6) { --dx: 30px; --dy: -230px; animation-delay: 0.25s; }
 
 @media (max-width: 780px) {
-  #stage-portrait { width: min(46vw, 320px); bottom: 140px; right: 2%; }
+  #stage-portrait {
+    width: min(46vw, 320px);
+    height: min(46vh, 460px);
+    bottom: clamp(150px, 26vh, 240px);
+    right: 2%;
+  }
   .office-spirit { width: min(30vw, 220px); }
+}
+/* Landscape phones: very little vertical room, so the stage art has to
+   shrink rather than push off the top of the screen. */
+@media (max-height: 480px) {
+  #stage-portrait {
+    width: min(26vw, 240px);
+    height: min(62vh, 300px);
+    bottom: clamp(96px, 26vh, 130px);
+  }
+  .office-spirit { height: 56%; width: min(20vw, 160px); }
 }
 
 /* ---------------------------------------------------------- */
@@ -489,6 +548,8 @@ html, body {
 }
 #explore-continue:hover { transform: translate(-50%, -3px) scale(1.03); box-shadow: 0 12px 30px rgba(217,184,119,0.5); }
 #explore-continue:active { transform: translate(-50%, -1px) scale(0.97); }
+/* in the character gallery it lives in the lane under the card */
+#explore-continue.gallery-continue { bottom: max(14px, 4%); }
 
 @keyframes ctaBreathe {
   0%, 100% { box-shadow: 0 8px 24px rgba(217,184,119,0.35); }
@@ -514,11 +575,22 @@ html, body {
 /* Character introduction screen (客服靈 gallery) */
 .char-intro {
   position: absolute;
-  inset: 6% 6% 14%;
+  /* bottom inset leaves a lane for the 繼續 button below the card */
+  inset: 5% 6% 17%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: auto;
+}
+/* portrait + bio + the two nav arrows share one row; the page dots sit
+   below it in normal flow so they can never land on the text */
+.char-intro-row {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 18px;
-  pointer-events: auto;
 }
 .char-intro-stage {
   flex: 1;
@@ -558,14 +630,41 @@ html, body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* Deliberately not `justify-content: center`: once the bio is taller
+     than the panel, centering pushes the first lines out of the
+     scrollable area and they can never be reached. */
+  justify-content: flex-start;
   background: var(--ui-bg);
   border: 1px solid var(--ui-border);
   border-radius: 18px;
   padding: 28px 32px;
   color: #fbeaf5;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--char-accent, rgba(255,173,214,0.5)) transparent;
+}
+.char-intro-info::-webkit-scrollbar { width: 5px; }
+.char-intro-info::-webkit-scrollbar-thumb {
+  background: var(--char-accent, rgba(255,173,214,0.5));
+  border-radius: 3px;
+}
+/* short bios still look centred; long ones start at the top */
+.char-intro-info > :first-child { margin-top: auto; }
+.char-intro-info > :last-child { margin-bottom: auto; }
+/* sticky fade so a bio that runs past the panel reads as "more below"
+   rather than as text that got cut off */
+.char-intro-info::after {
+  content: "";
+  flex: 0 0 auto;
+  position: sticky;
+  bottom: -28px;
+  height: 28px;
+  margin-top: -28px;
+  background: linear-gradient(to top, rgba(30, 18, 34, 0.92), transparent);
+  pointer-events: none;
 }
 .char-intro-tag { font-size: 13px; letter-spacing: 3px; color: var(--char-accent, var(--pink-bright)); }
 .char-intro-name { margin: 6px 0 10px; font-family: var(--font-serif); font-size: clamp(24px, 3vw, 34px); }
@@ -598,11 +697,9 @@ html, body {
 .char-nav:hover { background: rgba(255,173,214,0.18); }
 
 .char-intro-dots {
-  position: absolute;
-  bottom: 4%;
-  left: 50%;
-  transform: translateX(-50%);
+  flex: 0 0 auto;
   display: flex;
+  justify-content: center;
   gap: 10px;
 }
 .char-dot {
@@ -621,12 +718,34 @@ html, body {
 .theme-three { --char-accent: #9fe8d8; }
 
 @media (max-width: 780px) {
-  .char-intro { inset: 4% 3% 16%; gap: 8px; }
+  .char-intro { inset: 3% 3% 19%; gap: 8px; }
+  .char-intro-row { gap: 8px; }
   .char-intro-stage { flex-direction: column; gap: 12px; }
-  .char-intro-portrait { flex: 0 0 38%; }
-  .char-intro-info { padding: 18px 20px; }
-  .char-intro-name { font-size: 22px; }
+  .char-intro-portrait { flex: 0 0 36%; }
+  .char-intro-info { padding: 16px 18px; }
+  .char-intro-name { font-size: 22px; margin: 4px 0 8px; }
+  .char-intro-meta { margin-bottom: 10px; gap: 12px; }
+  .char-intro-fields { margin-bottom: 10px; }
+  .char-intro-fields dd { font-size: 14px; line-height: 1.55; }
   .char-nav { width: 34px; height: 34px; font-size: 12px; }
+}
+/* Landscape phones: put the portrait back beside the bio so the
+   scrollable text keeps a usable height. */
+@media (max-height: 480px) {
+  .char-intro { inset: 4% 4% 20%; }
+  .char-intro-stage { flex-direction: row; gap: 14px; }
+  .char-intro-portrait { flex: 0 0 30%; }
+  .char-intro-info { padding: 14px 16px; }
+  .char-intro-name { font-size: 20px; margin: 2px 0 6px; }
+  .char-intro-tag { font-size: 11px; }
+  .char-intro-meta { margin-bottom: 8px; font-size: 12px; }
+  .char-intro-fields dt { margin-top: 6px; }
+  .char-intro-fields dd { font-size: 13px; line-height: 1.5; }
+  .char-intro-quote { font-size: 13px; padding-top: 8px; }
+  .char-intro-dots { display: none; }
+  #explore-continue { padding: 9px 26px; font-size: 14px; }
+  #dialogue-box { min-height: 92px; padding: 14px 46px 18px 24px; bottom: 10px; }
+  #dialogue-text { font-size: clamp(15px, 2vw, 18px); line-height: 1.6; min-height: 2.6em; }
 }
 
 /* Call record paging widget — 神界公文卷宗 */
@@ -1019,7 +1138,8 @@ html, body {
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 24px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
   transition: opacity var(--dur-med) ease, transform var(--dur-med) ease;
-  overflow: hidden;
+  /* No overflow clipping here — the speaker plate deliberately sits
+     above the top edge and would get sliced in half. */
 }
 #dialogue-box.hidden { opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(10px); }
 
@@ -1038,8 +1158,9 @@ html, body {
   opacity: 0.5;
   pointer-events: none;
 }
-#dialogue-box::before { left: -6px; }
-#dialogue-box::after { right: -6px; transform: translateY(-50%) scaleX(-1); }
+/* kept inside the box now that it no longer clips its overflow */
+#dialogue-box::before { left: 6px; }
+#dialogue-box::after { right: 6px; transform: translateY(-50%) scaleX(-1); }
 
 #speaker-name {
   position: absolute;
@@ -1893,34 +2014,136 @@ html, body {
 /* 第一章・完 (chapter end card, over the whiteout transition)  */
 /* ---------------------------------------------------------- */
 
+/* Shared ornament: a thin gold rule with a diamond at its centre */
+.ending-rule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: min(260px, 62vw);
+}
+.ending-rule span {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to var(--dir, right), transparent, rgba(176, 140, 66, 0.65));
+}
+.ending-rule span:last-of-type { --dir: left; }
+.ending-rule i {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  transform: rotate(45deg);
+  border: 1px solid rgba(176, 140, 66, 0.75);
+  background: rgba(217, 184, 119, 0.35);
+}
+
 #chapter-end {
   position: absolute;
   inset: 0;
   z-index: 45;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  padding: 24px;
   cursor: pointer;
   opacity: 0;
   transition: opacity 1.4s ease;
+  overflow: hidden;
 }
 #chapter-end.show { opacity: 1; }
 #chapter-end.hidden { display: none; }
+
+#chapter-end-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 48%, rgba(226, 195, 128, 0.4) 0%, rgba(240, 226, 190, 0.18) 34%, transparent 68%);
+  pointer-events: none;
+}
+#chapter-end-motes { position: absolute; inset: 0; pointer-events: none; }
+#chapter-end-motes span {
+  position: absolute;
+  bottom: -4%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #d9b877;
+  box-shadow: 0 0 8px 2px rgba(200, 162, 82, 0.45);
+  opacity: 0;
+  animation: moteDrift 13s linear infinite;
+}
+#chapter-end-motes span:nth-child(1) { left: 18%; animation-delay: 0.2s; animation-duration: 14s; }
+#chapter-end-motes span:nth-child(2) { left: 32%; animation-delay: 2.6s; animation-duration: 12s; }
+#chapter-end-motes span:nth-child(3) { left: 47%; animation-delay: 1.2s; animation-duration: 16s; }
+#chapter-end-motes span:nth-child(4) { left: 63%; animation-delay: 3.8s; animation-duration: 13s; }
+#chapter-end-motes span:nth-child(5) { left: 76%; animation-delay: 0.9s; animation-duration: 15s; }
+#chapter-end-motes span:nth-child(6) { left: 88%; animation-delay: 4.6s; animation-duration: 11.5s; }
+
+#chapter-end-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+/* each beat settles in turn rather than the whole card popping at once */
+#chapter-end.show #chapter-end-seal { animation: endingRise 1s var(--ease-glass) 0.15s both; }
+#chapter-end.show #chapter-end-title { animation: endingRise 1s var(--ease-glass) 0.45s both; }
+#chapter-end.show .ending-rule { animation: endingRise 1s var(--ease-glass) 0.8s both; }
+#chapter-end.show #chapter-end-sub { animation: endingRise 1s var(--ease-glass) 0.95s both; }
+#chapter-end.show #chapter-end-hint { animation: endingRise 1s var(--ease-glass) 1.5s both; }
+@keyframes endingRise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+#chapter-end-seal {
+  width: clamp(56px, 9vw, 74px);
+  height: clamp(56px, 9vw, 74px);
+  border-radius: 50%;
+  border: 1px solid rgba(176, 140, 66, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: radial-gradient(circle at 50% 40%, rgba(255, 249, 232, 0.95), rgba(240, 224, 184, 0.7));
+  box-shadow: 0 6px 26px rgba(190, 152, 74, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+#chapter-end-seal::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  border: 1px dashed rgba(176, 140, 66, 0.4);
+}
+#chapter-end-seal span {
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 3.4vw, 30px);
+  color: #8a6a2e;
+}
 #chapter-end-title {
   font-family: var(--font-serif);
-  font-size: clamp(32px, 6vw, 56px);
-  letter-spacing: 10px;
+  font-size: clamp(30px, 6vw, 54px);
+  letter-spacing: 0.18em;
+  text-indent: 0.18em;
   color: #6b5220;
-  text-shadow: 0 2px 24px rgba(217,184,119,0.4);
+  text-shadow: 0 2px 26px rgba(217, 184, 119, 0.45);
+}
+#chapter-end-sub {
+  font-family: var(--font-serif);
+  font-size: clamp(12px, 1.6vw, 14px);
+  letter-spacing: 0.4em;
+  text-indent: 0.4em;
+  color: #a8925a;
 }
 #chapter-end-hint {
+  margin-top: 10px;
   font-size: 13px;
   letter-spacing: 3px;
-  color: #a8925a;
+  color: #b09b6a;
   animation: bounceHint 1.4s ease-in-out infinite;
 }
+#chapter-end.show #chapter-end-hint { animation: endingRise 1s var(--ease-glass) 1.5s both, bounceHint 1.4s ease-in-out 2.5s infinite; }
 
 /* ---------------------------------------------------------- */
 /* CTA — 導流到正式遊戲                                         */
@@ -1930,38 +2153,101 @@ html, body {
   position: absolute;
   inset: 0;
   z-index: 46;
-  background:
-    radial-gradient(ellipse at 50% 30%, rgba(217,184,119,0.16) 0%, transparent 55%),
-    var(--cloud-white);
+  background: var(--cloud-white);
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 14px;
-  padding: 0 24px;
+  padding: 24px;
   text-align: center;
   opacity: 0;
   transition: opacity 0.9s ease;
+  overflow: hidden;
 }
 #cta-screen.show { opacity: 1; }
 #cta-screen.hidden { display: none; }
+
+/* the cover art returns, far out of focus, so the send-off still feels
+   like it belongs to the same world as the title screen */
+#cta-backdrop {
+  position: absolute;
+  inset: 0;
+  background: url("../assets/backgrounds/title-cover.jpg") center 22% / cover no-repeat;
+  filter: blur(46px) saturate(1.05) brightness(1.06);
+  transform: scale(1.2);
+  opacity: 0.55;
+  pointer-events: none;
+}
+#cta-screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 42%, rgba(255, 250, 238, 0.9) 0%, rgba(252, 246, 232, 0.72) 45%, rgba(248, 240, 222, 0.55) 100%);
+  pointer-events: none;
+}
+
+#cta-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 460px;
+}
+#cta-screen.show #cta-inner > * { animation: endingRise 0.9s var(--ease-glass) both; }
+#cta-screen.show #cta-emblem { animation-delay: 0.1s; }
+#cta-screen.show #cta-title { animation-delay: 0.25s; }
+#cta-screen.show #cta-en { animation-delay: 0.33s; }
+#cta-screen.show .ending-rule { animation-delay: 0.45s; }
+#cta-screen.show #cta-copy { animation-delay: 0.55s; }
+#cta-screen.show #cta-button { animation-delay: 0.7s; }
+#cta-screen.show #cta-tagline { animation-delay: 0.9s; }
+
 #cta-emblem {
-  width: 64px;
-  height: 64px;
+  width: 70px;
+  height: 70px;
   border-radius: 50%;
-  border: 1px solid rgba(217,184,119,0.5);
+  border: 1px solid rgba(176, 140, 66, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-serif);
-  font-size: 26px;
-  color: #6b5220;
-  margin-bottom: 6px;
+  position: relative;
+  background: radial-gradient(circle at 50% 38%, rgba(255, 250, 236, 0.95), rgba(242, 228, 192, 0.72));
+  box-shadow: 0 8px 30px rgba(190, 152, 74, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  margin-bottom: 2px;
 }
-#cta-title { font-family: var(--font-serif); color: #4a3413; font-size: 22px; letter-spacing: 4px; margin: 0; }
-#cta-copy { color: #7a5a3a; font-size: 15px; max-width: 420px; line-height: 1.7; margin: 0; }
+#cta-emblem::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 1px dashed rgba(176, 140, 66, 0.38);
+}
+#cta-emblem span { font-family: var(--font-serif); font-size: 28px; color: #8a6a2e; }
+
+#cta-title {
+  font-family: var(--font-serif);
+  color: #4a3413;
+  font-size: clamp(21px, 3.6vw, 28px);
+  letter-spacing: 0.28em;
+  text-indent: 0.28em;
+  margin: 0;
+}
+#cta-en {
+  margin: 0;
+  font-size: clamp(9px, 1.3vw, 11px);
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  color: #a8925a;
+}
+#cta-copy {
+  color: #6f5334;
+  font-size: clamp(14px, 2vw, 16px);
+  line-height: 1.8;
+  margin: 4px 0 0;
+}
 #cta-button {
-  margin-top: 14px;
+  margin-top: 10px;
   display: inline-block;
   padding: 15px 38px;
   background: linear-gradient(180deg, var(--gold-bright), var(--gold));
@@ -1970,12 +2256,23 @@ html, body {
   letter-spacing: 2px;
   border-radius: 30px;
   text-decoration: none;
-  box-shadow: 0 10px 26px rgba(217,184,119,0.4);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 10px 26px rgba(217, 184, 119, 0.4);
   transition: transform var(--dur-fast) var(--ease-glass), box-shadow var(--dur-fast) ease;
-  animation: ctaBreathe 3.2s ease-in-out infinite;
+}
+#cta-screen.show #cta-button {
+  animation: endingRise 0.9s var(--ease-glass) 0.7s both, ctaBreathe 3.2s ease-in-out 1.7s infinite;
 }
 #cta-button:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 14px 32px rgba(217,184,119,0.55); }
 #cta-button:active { transform: translateY(-1px) scale(0.97); }
+#cta-tagline {
+  margin: 14px 0 0;
+  font-family: var(--font-serif);
+  font-size: clamp(11px, 1.6vw, 13px);
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
+  color: #a8925a;
+}
 
 /* ---------------------------------------------------------- */
 /* Responsive                                                   */
@@ -1986,10 +2283,19 @@ html, body {
   #record-panel { padding: 20px; }
 }
 
-/* Ultrawide: cap the playfield so UI doesn't stretch into the void */
+/* Ultrawide: cap the playfield so UI doesn't stretch into the void.
+   Longhands only — an `inset` shorthand here would reset the `left`
+   that the centering transform depends on. */
 @media (min-aspect-ratio: 21/9) {
   #dialogue-box { width: min(880px, 70vw); }
-  .char-intro { left: 50%; transform: translateX(-50%); width: min(1400px, 82vw); inset: 6% auto 14% auto; }
+  .char-intro {
+    top: 5%;
+    bottom: 17%;
+    right: auto;
+    left: 50%;
+    width: min(1400px, 82vw);
+    transform: translateX(-50%);
+  }
 }
 
 /* Reduce decorative motion — keep functional transitions, drop the rest */
