@@ -134,6 +134,13 @@ export class Gallery {
     this.wrap.querySelector(".f-weakness").textContent = interpolate(c.weakness || "");
     this.wrap.querySelector(".char-intro-quote").textContent = interpolate(c.quote || "");
     [...this.dotsEl.children].forEach((d, i) => d.classList.toggle("active", i === this.index));
+
+    // The "more below" fade is only meaningful when the bio actually
+    // overflows; measured after layout so it reflects the real height.
+    const info = this.wrap.querySelector(".char-intro-info");
+    requestAnimationFrame(() => {
+      info.classList.toggle("is-scrollable", info.scrollHeight > info.clientHeight + 2);
+    });
   }
 
   clear() {

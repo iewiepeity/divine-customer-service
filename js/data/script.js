@@ -207,13 +207,15 @@ export const openingScript = [
   {
     scene: "Scene_08a",
     type: "dialogue",
-    background: "bg-office",
+    background: "bg-office-room",
     transition: "fade",
     deco: OFFICE_SPIRITS_DECO,
     lines: [
       "大殿的金光漸漸沉靜下來，玉皇大帝的身影也隱入雲霧之中。",
-      "下一瞬間，眼前的景象已經換成了那張陌生的辦公桌——你回到了主管辦公室。",
-      "一號、二號、三號，已經穩穩站在你身邊，各自站定了位置。",
+      "下一瞬間，眼前的景象一變——那張陌生的辦公桌、成排的卷宗櫃、窗外翻湧的雲海。",
+      "你回到了主管辦公室。",
+      "地面上，三只法陣同時亮起。",
+      "一號、二號、三號，各自站上了屬於自己的位置。",
     ],
   },
 
@@ -223,7 +225,7 @@ export const openingScript = [
   {
     scene: "Scene_08b",
     type: "dialogue",
-    background: "bg-office",
+    background: "bg-office-room",
     transition: "none",
     deco: OFFICE_SPIRITS_DECO,
     sfxOnEnter: "phoneRing",
@@ -253,7 +255,7 @@ export const openingScript = [
   {
     scene: "Scene_09",
     type: "dispatchChoice",
-    background: "bg-office",
+    background: "bg-office-room",
     transition: "none",
     deco: OFFICE_SPIRITS_DECO,
     sfxOnEnter: "vibrate",
@@ -378,7 +380,7 @@ export const openingScript = [
   {
     scene: "Scene_10",
     type: "dialogue",
-    background: "bg-office",
+    background: "bg-office-room",
     transition: "none",
     deco: OFFICE_SPIRITS_DECO,
     sfxOnEnter: "phoneRing",
@@ -395,7 +397,7 @@ export const openingScript = [
   {
     scene: "Scene_chapterEnd",
     type: "chapterEnd",
-    background: "bg-office",
+    background: "bg-office-room",
     transition: "whiteout",
     title: "序章・完",
   },

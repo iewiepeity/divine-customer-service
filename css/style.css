@@ -119,14 +119,23 @@ html, body {
 
 .bg-void {
   background:
-    radial-gradient(ellipse at 50% 40%, rgba(255,214,235,0.4) 0%, rgba(255,214,235,0.06) 35%, transparent 60%),
-    radial-gradient(ellipse at center, #241730 0%, #0c0712 100%);
+    linear-gradient(180deg, rgba(120,110,140,0.06) 0%, rgba(90,80,110,0.12) 100%),
+    url("../assets/backgrounds/void.jpg") center / cover no-repeat;
 }
 
+/* 主管辦公桌特寫 — used for the item-hunting scene */
 .bg-office {
   background:
     linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.4) 100%),
     url("../assets/backgrounds/desk.jpg") center / cover no-repeat;
+}
+
+/* 主管辦公室全景 — the wide shot with the three 客服靈站 floor marks,
+   used from the moment the spirits take their posts onward */
+.bg-office-room {
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0.34) 100%),
+    url("../assets/backgrounds/office-room.jpg") center / cover no-repeat;
 }
 
 .bg-heaven {
@@ -142,10 +151,11 @@ html, body {
     url("../assets/backgrounds/heaven-hall.jpg") center / cover no-repeat;
 }
 
+/* 三道金光落下 — the darkened hall the 客服靈 descend into */
 .bg-spotlight {
   background:
-    radial-gradient(circle at 50% 45%, rgba(255,214,235,0.65) 0%, rgba(255,214,235,0.1) 30%, transparent 55%),
-    linear-gradient(180deg, #241830 0%, #0f0916 100%);
+    linear-gradient(180deg, rgba(10,6,16,0.18) 0%, rgba(10,6,16,0.45) 100%),
+    url("../assets/backgrounds/spotlight.jpg") center / cover no-repeat;
 }
 
 /* Light flash (transition style: Light Fade) */
@@ -271,11 +281,14 @@ html, body {
    through the dispatch choice and ending. */
 .office-spirit {
   position: absolute;
-  bottom: 0;
+  /* lifted off the very bottom so each one lands on its floor mark */
+  bottom: 8%;
   /* fitted to the 3:4 artwork so the feathering below lands on the
-     illustration's real edges (see #stage-portrait for the rationale) */
+     illustration's real edges (see #stage-portrait for the rationale).
+     Scaled to read as someone standing on the floor marks rather than
+     looming over the desk. */
   aspect-ratio: 3 / 4;
-  height: min(64%, calc(min(24vw, 280px) * 4 / 3));
+  height: min(42%, calc(min(19vw, 250px) * 4 / 3));
   width: auto;
   background-size: cover;
   background-position: bottom center;
@@ -287,18 +300,12 @@ html, body {
   mask-composite: intersect;
   opacity: 0;
 }
-.office-spirit-left { left: 4%; animation: officeSpiritInSide 0.7s var(--ease-glass) 0.1s forwards; }
-.office-spirit-center {
-  left: 50%;
-  transform: translateX(-50%);
-  animation: officeSpiritInCenter 0.7s var(--ease-glass) 0.35s forwards;
-}
-.office-spirit-right { right: 4%; animation: officeSpiritInSide 0.7s var(--ease-glass) 0.6s forwards; }
-@keyframes officeSpiritInSide {
-  from { opacity: 0; transform: translateY(26px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes officeSpiritInCenter {
+/* Centres measured from the 一號/二號/三號客服靈站 marks painted into
+   the office artwork, so each spirit stands on its own mark. */
+.office-spirit-left { left: 22.5%; transform: translateX(-50%); animation: officeSpiritIn 0.7s var(--ease-glass) 0.1s forwards; }
+.office-spirit-center { left: 50%; transform: translateX(-50%); animation: officeSpiritIn 0.7s var(--ease-glass) 0.35s forwards; }
+.office-spirit-right { left: 77.5%; transform: translateX(-50%); animation: officeSpiritIn 0.7s var(--ease-glass) 0.6s forwards; }
+@keyframes officeSpiritIn {
   from { opacity: 0; transform: translateX(-50%) translateY(26px); }
   to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
@@ -654,9 +661,11 @@ html, body {
 /* short bios still look centred; long ones start at the top */
 .char-intro-info > :first-child { margin-top: auto; }
 .char-intro-info > :last-child { margin-bottom: auto; }
-/* sticky fade so a bio that runs past the panel reads as "more below"
-   rather than as text that got cut off */
-.char-intro-info::after {
+/* Sticky fade so a bio that runs past the panel reads as "more below"
+   rather than as text that got cut off. Only drawn when the bio actually
+   overflows — otherwise it shows up as a dark band under short bios.
+   `is-scrollable` is set by the gallery after each render. */
+.char-intro-info.is-scrollable::after {
   content: "";
   flex: 0 0 auto;
   position: sticky;
