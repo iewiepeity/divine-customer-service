@@ -1,8 +1,12 @@
 // ============================================================
-// RecordPanel — the giant 卷宗 (case scroll). Never opens blank:
-// cover appears first, then auto-unfurls into the first page, then
-// fields are typed out one at a time (typewriter + stamp + page-turn),
-// each field revealed only after the previous one finished.
+// RecordPanel — the 卷宗 (case tome). Never opens blank: the closed
+// volume is shown first, it swings open onto the official art, then the
+// fields are typed onto the page one at a time (typewriter + stamp +
+// page-turn), each waiting for the previous one to finish.
+//
+// The page art carries its own printed sample entries, so the field area
+// is washed back to bare paper before this writes the player's own
+// record over it — the binding, tabs and page edges stay visible.
 // ============================================================
 import { audio } from "./audio.js";
 import { interpolate } from "./variables.js";
@@ -19,26 +23,25 @@ export class RecordPanel {
    */
   open(title, fields, onComplete) {
     this.layer.innerHTML = "";
-    const panel = document.createElement("div");
-    panel.id = "record-panel";
-    panel.innerHTML = `
-      <div id="record-cover">
-        <div class="record-cover-seal">機密</div>
-        <div class="record-cover-title">卷宗</div>
-        <div class="record-cover-hint">正在開啟……</div>
+    const wrap = document.createElement("div");
+    wrap.id = "record-wrap";
+    wrap.innerHTML = `
+      <div id="record-panel">
+        <div id="record-page">
+          <h3>${interpolate(title)}</h3>
+          <div id="record-fields"></div>
+        </div>
+        <div id="record-cover"></div>
       </div>
-      <div id="record-content" class="hidden">
-        <h3>${interpolate(title)}</h3>
-        <div id="record-fields"></div>
-        <button id="record-next" disabled>翻下一頁</button>
-      </div>
+      <button id="record-next" disabled>翻下一頁</button>
     `;
-    this.layer.appendChild(panel);
+    this.layer.appendChild(wrap);
 
-    const cover = panel.querySelector("#record-cover");
-    const content = panel.querySelector("#record-content");
-    const fieldsEl = panel.querySelector("#record-fields");
-    const btn = panel.querySelector("#record-next");
+    const panel = wrap.querySelector("#record-panel");
+    const cover = wrap.querySelector("#record-cover");
+    const page = wrap.querySelector("#record-page");
+    const fieldsEl = wrap.querySelector("#record-fields");
+    const btn = wrap.querySelector("#record-next");
 
     let i = 0;
     let activeType = null;
@@ -57,6 +60,7 @@ export class RecordPanel {
         onDone: () => {
           activeType = null;
           audio.stamp();
+          row.classList.add("stamped");
           btn.disabled = false;
           i += 1;
           btn.textContent = i >= fields.length ? "闔上卷宗" : "翻下一頁";
@@ -77,18 +81,18 @@ export class RecordPanel {
       }
     });
 
-    // Cover → unfurl → first field, all automatic — the player must
-    // never see an empty record, so nothing here waits on a click.
+    // Closed volume → opens → first entry, all automatic. The player must
+    // never be looking at an empty record.
     setTimeout(() => {
-      cover.classList.add("opening");
       audio.pageTurn();
+      cover.classList.add("opening");
+      panel.classList.add("opened");
       setTimeout(() => {
         cover.remove();
-        content.classList.remove("hidden");
-        content.classList.add("unfurl-in");
+        page.classList.add("show");
         addField();
-      }, 420);
-    }, 550);
+      }, 620);
+    }, 620);
   }
 }
 

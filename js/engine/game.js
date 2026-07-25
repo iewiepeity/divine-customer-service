@@ -16,7 +16,6 @@ import { audio } from "./audio.js";
 import { saveManager } from "./save.js";
 import { resultCard } from "./resultCard.js";
 import { hud } from "../ui/hud.js";
-import { SCROLL_ICON } from "../ui/icons.js";
 import { portrait } from "./portrait.js";
 import { interpolate } from "./variables.js";
 
@@ -190,16 +189,19 @@ export class Game {
     }
   }
 
+  /**
+   * The 卷宗 is the whole point of the scene, so it gets the middle of the
+   * screen as a real object rather than a hotspot pip.
+   */
   _showRecordHotspot(node) {
     const layer = document.getElementById("interaction-layer");
     layer.innerHTML = "";
     const btn = document.createElement("button");
-    btn.className = "hotspot";
-    btn.style.left = (node.hotspot?.x ?? 50) + "%";
-    btn.style.top = (node.hotspot?.y ?? 55) + "%";
+    btn.className = "record-object";
+    btn.setAttribute("aria-label", node.hotspot?.label ?? "卷宗");
     btn.innerHTML =
-      `<div class="icon has-image" style="background-image:url('${SCROLL_ICON}')"></div>` +
-      `<div class="label">${node.hotspot?.label ?? "卷宗"}</div>`;
+      `<div class="record-object-img"></div>` +
+      `<div class="record-object-label">${node.hotspot?.label ?? "卷宗"}</div>`;
     btn.addEventListener("click", () => {
       recordPanel.open(node.title, node.fields, () => this.next());
     });

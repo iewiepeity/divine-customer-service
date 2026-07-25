@@ -23,6 +23,9 @@
      onto the scene. Two linear passes soften the sides/top/bottom and the
      radial pass takes the corners, where the linears would otherwise
      multiply out to nearly opaque. Combined with mask-composite. */
+  --book-feather:
+    linear-gradient(to bottom, transparent 0%, #000 7%, #000 93%, transparent 100%),
+    linear-gradient(to right, transparent 0%, #000 5%, #000 95%, transparent 100%);
   --art-feather:
     linear-gradient(to bottom, transparent 0%, #000 14%, #000 72%, rgba(0,0,0,0.45) 90%, transparent 100%),
     linear-gradient(to right, transparent 0%, #000 11%, #000 89%, transparent 100%),
@@ -762,90 +765,63 @@ html, body {
   #dialogue-text { font-size: clamp(15px, 2vw, 18px); line-height: 1.6; min-height: 2.6em; }
 }
 
-/* Call record paging widget — 神界公文卷宗 */
-#record-panel {
+/* ============================================================ */
+/* 巨大卷宗 — the case tome                                       */
+/* ============================================================ */
+
+/* The closed volume, sitting in the middle of the hall waiting to be
+   opened. Glow only — an infinite transform here would fight the hover
+   state and stall pointer interaction. */
+.record-object {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 52%;
   transform: translate(-50%, -50%);
-  width: min(560px, 86vw);
-  max-height: 82vh;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
-  background:
-    repeating-linear-gradient(180deg, rgba(180,140,70,0.05) 0 28px, transparent 28px 29px),
-    linear-gradient(180deg, var(--ivory), var(--cream-gold) 130%);
-  color: #4a3413;
-  border-radius: 4px;
-  border: 1px solid rgba(180,140,70,0.4);
-  padding: 30px 34px;
-  box-shadow: 0 30px 70px rgba(0,0,0,0.6), 0 0 0 6px rgba(30,18,10,0.08);
-  pointer-events: auto;
-  font-family: var(--font-serif);
-  transform-origin: top center;
-  animation: unfurl var(--dur-slow) var(--ease-glass);
-}
-@keyframes unfurl {
-  from { opacity: 0; transform: translate(-50%, -50%) scaleY(0.75); }
-  to { opacity: 1; transform: translate(-50%, -50%) scaleY(1); }
-}
-#record-panel::before,
-#record-panel::after {
-  content: "";
-  position: absolute;
-  width: 22px;
-  height: 22px;
-  border: 2px solid rgba(180,140,70,0.55);
-  opacity: 0.8;
-}
-#record-panel::before { top: 10px; left: 10px; border-right: none; border-bottom: none; }
-#record-panel::after { bottom: 10px; right: 10px; border-left: none; border-top: none; }
-
-#record-panel h3 {
-  margin: 0 0 14px;
-  font-size: 15px;
-  letter-spacing: 4px;
-  color: #8a6a2e;
-  border-bottom: 1px dashed rgba(138,106,46,0.4);
-  padding-bottom: 10px;
-  flex-shrink: 0;
-}
-#record-fields { min-height: 130px; overflow-y: auto; }
-.record-field {
-  display: flex;
-  justify-content: space-between;
+  align-items: center;
   gap: 12px;
-  padding: 10px 4px;
-  border-bottom: 1px solid rgba(138,106,46,0.2);
-  font-size: 15px;
-  opacity: 0;
-  transform: translateX(-8px);
-  animation: fieldIn 0.5s ease forwards;
-}
-@keyframes fieldIn { to { opacity: 1; transform: translateX(0); } }
-.record-field .key { color: #6b5228; flex-shrink: 0; }
-.record-field .val { font-weight: 700; color: #a8452f; text-align: right; }
-#record-next {
-  flex-shrink: 0;
-  margin-top: 18px;
-  width: 100%;
-  padding: 11px;
-  background: linear-gradient(180deg, #8a6a2e, #6b5220);
-  color: var(--ivory);
-  border: 1px solid rgba(255,255,255,0.25);
-  border-radius: 6px;
-  font-size: 14px;
-  letter-spacing: 2px;
+  padding: 0;
+  border: 0;
+  background: none;
   cursor: pointer;
-  transition: transform var(--dur-fast) ease, filter var(--dur-fast) ease, opacity var(--dur-fast) ease;
+  pointer-events: auto;
+  animation: recordObjectGlow 3.4s ease-in-out infinite;
+  border-radius: 8px;
+  transition: transform var(--dur-med) var(--ease-glass);
 }
-#record-next:hover { filter: brightness(1.12); transform: translateY(-2px); }
-#record-next:active { transform: translateY(0) scale(0.97); }
-#record-next:disabled { opacity: 0.45; cursor: default; transform: none; filter: none; }
+.record-object-img {
+  width: min(38vw, 340px);
+  height: min(38vw, 340px);
+  max-height: 46vh;
+  background: url("../assets/items/scroll-closed.jpg") center / contain no-repeat;
+  filter: drop-shadow(0 26px 40px rgba(0, 0, 0, 0.6));
+  /* the artwork brings its own desk with it — feather it into the hall
+     so the crop doesn't read as a rectangle pasted onto the floor */
+  -webkit-mask-image: var(--book-feather);
+  -webkit-mask-composite: source-in;
+  mask-image: var(--book-feather);
+  mask-composite: intersect;
+}
+.record-object-label {
+  font-family: var(--font-serif);
+  font-size: 14px;
+  letter-spacing: 4px;
+  color: var(--gold-bright);
+  background: rgba(26, 15, 34, 0.72);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 5px 16px;
+  backdrop-filter: blur(4px);
+}
+.record-object:hover { transform: translate(-50%, -50%) scale(1.04); }
+.record-object:active { transform: translate(-50%, -50%) scale(0.99); }
+@keyframes recordObjectGlow {
+  0%, 100% { box-shadow: 0 0 30px 0 rgba(243, 222, 163, 0.16); }
+  50% { box-shadow: 0 0 60px 12px rgba(243, 222, 163, 0.34); }
+}
 
-/* 卷宗封面 — shown first so the record is never blank on open */
-#record-cover {
+#record-wrap {
   position: absolute;
   inset: 0;
   display: flex;
@@ -853,28 +829,156 @@ html, body {
   align-items: center;
   justify-content: center;
   gap: 14px;
-  background:
-    repeating-linear-gradient(135deg, rgba(180,140,70,0.06) 0 2px, transparent 2px 14px),
-    linear-gradient(180deg, #8a6a2e, #6b5220 130%);
-  color: var(--cream-gold);
-  border-radius: 4px;
-  transition: opacity var(--dur-med) ease, transform var(--dur-med) var(--ease-glass);
+  pointer-events: auto;
+  padding: 12px;
 }
-#record-cover.opening { opacity: 0; transform: scale(0.94); }
-.record-cover-seal {
-  width: 62px; height: 62px; border-radius: 50%;
-  border: 2px solid rgba(255,235,200,0.7);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; letter-spacing: 2px; color: #ffe9b8;
-  transform: rotate(-8deg);
-}
-.record-cover-title { font-size: 22px; letter-spacing: 10px; font-family: var(--font-serif); }
-.record-cover-hint { font-size: 12px; letter-spacing: 3px; opacity: 0.75; }
 
-#record-content.unfurl-in { animation: recordContentIn var(--dur-med) var(--ease-glass); }
-@keyframes recordContentIn {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Aspect-locked to the artwork so the field area always lands on the
+   right-hand page rather than drifting with the viewport. */
+#record-panel {
+  position: relative;
+  --bw: min(94vw, 880px);
+  --bh: min(74vh, 660px);
+  width: min(var(--bw), calc(var(--bh) * 1448 / 1086));
+  height: min(var(--bh), calc(var(--bw) * 1086 / 1448));
+  background: url("../assets/items/scroll-open.jpg") center / 100% 100% no-repeat;
+  filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.62));
+  -webkit-mask-image: var(--book-feather);
+  -webkit-mask-composite: source-in;
+  mask-image: var(--book-feather);
+  mask-composite: intersect;
+  animation: unfurl var(--dur-slow) var(--ease-glass);
+  transform-origin: center left;
+}
+@keyframes unfurl {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* the closed volume laid over the open one, swinging away on open */
+#record-cover {
+  position: absolute;
+  inset: 0;
+  background: url("../assets/items/scroll-closed.jpg") center / contain no-repeat;
+  border-radius: 4px;
+  transform-origin: center left;
+  transition: transform 0.6s var(--ease-glass), opacity 0.6s ease;
+}
+#record-cover.opening {
+  opacity: 0;
+  transform: perspective(1200px) rotateY(-42deg) scale(0.97);
+}
+
+/* The page art has printed sample entries on it, so the writing area is
+   washed back to bare paper before the player's own record goes down. */
+#record-page {
+  position: absolute;
+  left: 48.5%;
+  top: 21.5%;
+  width: 38.5%;
+  height: 57.5%;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 16px;
+  background: linear-gradient(180deg, rgb(240, 233, 215), rgb(232, 223, 200));
+  box-shadow: inset 0 0 22px rgba(140, 112, 62, 0.18), 0 0 12px 6px rgba(236, 229, 210, 0.9);
+  border-radius: 2px;
+  color: #4a3413;
+  font-family: var(--font-serif);
+  opacity: 0;
+  transition: opacity var(--dur-med) ease;
+}
+#record-page.show { opacity: 1; }
+#record-page h3 {
+  margin: 0 0 8px;
+  font-size: clamp(11px, 1.2vw, 14px);
+  letter-spacing: 3px;
+  color: #8a6a2e;
+  border-bottom: 1px solid rgba(138, 106, 46, 0.4);
+  padding-bottom: 7px;
+  flex-shrink: 0;
+  text-align: center;
+}
+#record-fields {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(138, 106, 46, 0.5) transparent;
+}
+#record-fields::-webkit-scrollbar { width: 4px; }
+#record-fields::-webkit-scrollbar-thumb { background: rgba(138, 106, 46, 0.45); border-radius: 2px; }
+
+.record-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 2px;
+  border-bottom: 1px dashed rgba(138, 106, 46, 0.32);
+  font-size: clamp(10px, 1.05vw, 13px);
+  line-height: 1.45;
+  opacity: 0;
+  transform: translateX(-6px);
+  animation: fieldIn 0.45s ease forwards;
+}
+@keyframes fieldIn { to { opacity: 1; transform: translateX(0); } }
+.record-field .key { color: #6b5228; flex-shrink: 0; }
+.record-field .val {
+  font-weight: 700;
+  color: #a8452f;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+/* the little red box the printed page puts around its own figures */
+.record-field.stamped .val {
+  border: 1px solid rgba(168, 69, 47, 0.55);
+  border-radius: 2px;
+  padding: 0 5px;
+}
+
+#record-next {
+  flex-shrink: 0;
+  padding: 10px 30px;
+  background: linear-gradient(180deg, #8a6a2e, #6b5220);
+  color: var(--ivory);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  font-size: 14px;
+  letter-spacing: 2px;
+  font-family: var(--font-serif);
+  cursor: pointer;
+  transition: transform var(--dur-fast) ease, filter var(--dur-fast) ease, opacity var(--dur-fast) ease;
+}
+#record-next:hover { filter: brightness(1.12); transform: translateY(-2px); }
+#record-next:active { transform: translateY(0) scale(0.97); }
+#record-next:disabled { opacity: 0.45; cursor: default; transform: none; filter: none; }
+
+/* Narrow screens can't fit readable text inside the painted page, so the
+   writing area becomes an inset laid across the open book instead. */
+@media (max-width: 780px) {
+  /* A portrait screen can't show a 4:3 spread and still leave the page
+     readable, so the book fills a taller box and is cropped toward the
+     page side, with the writing area inset over it. */
+  #record-panel {
+    width: min(94vw, 460px);
+    height: min(62vh, 540px);
+    background-size: cover;
+    background-position: 64% center;
+  }
+  #record-page {
+    left: 9%;
+    top: 12%;
+    width: 82%;
+    height: 76%;
+    padding: 14px 16px;
+    border-radius: 4px;
+    box-shadow: inset 0 0 22px rgba(140, 112, 62, 0.16), 0 10px 30px rgba(0, 0, 0, 0.4);
+  }
+  #record-page h3 { font-size: 13px; }
+  .record-field { font-size: 13px; padding: 8px 2px; }
+  .record-object-img { width: min(62vw, 300px); height: min(62vw, 300px); }
 }
 
 /* ---------------------------------------------------------- */
