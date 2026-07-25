@@ -1340,23 +1340,40 @@ html, body {
 /* Title screen                                                */
 /* ---------------------------------------------------------- */
 
+/* The key art carries the logo and the four button plates. The art is
+   fitted whole (never cropped) so the drawn plates always stay on
+   screen, and a blurred copy of the same image fills the leftover
+   space so wide screens never show letterbox bars. */
 #title-screen {
   position: absolute;
   inset: 0;
   z-index: 100;
   overflow: hidden;
-  background:
-    linear-gradient(to bottom, rgba(10,4,10,0) 42%, rgba(10,4,10,0.55) 74%, rgba(10,4,10,0.88) 100%),
-    url("../assets/backgrounds/cover.jpg") center top / cover no-repeat;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
-  padding-bottom: 6vh;
+  background: var(--cloud-white);
   transition: opacity var(--dur-slow) ease;
 }
 #title-screen.hidden { opacity: 0; pointer-events: none; }
+
+#title-backdrop {
+  position: absolute;
+  inset: 0;
+  background: url("../assets/backgrounds/title-cover.jpg") center / cover no-repeat;
+  filter: blur(34px) saturate(1.08) brightness(1.03);
+  transform: scale(1.15);
+  pointer-events: none;
+}
+
+#title-art {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* contain-fit at the artwork's exact 1054:1492 ratio */
+  width: min(100vw, calc(100vh * 1054 / 1492));
+  height: min(100vh, calc(100vw * 1492 / 1054));
+  background: url("../assets/backgrounds/title-cover.jpg") center / 100% 100% no-repeat;
+  box-shadow: 0 0 80px rgba(120, 96, 50, 0.18);
+}
 
 #title-logo,
 #title-sub {
@@ -1375,8 +1392,10 @@ html, body {
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: var(--gold-bright);
-  box-shadow: 0 0 6px 2px rgba(243,222,163,0.6);
+  /* warmer + denser than the in-game motes so they still read
+     against the bright ivory key art */
+  background: #d8b25f;
+  box-shadow: 0 0 7px 2px rgba(190, 150, 70, 0.5);
   opacity: 0;
   animation: moteDrift 9s linear infinite;
 }
@@ -1395,56 +1414,178 @@ html, body {
   100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
 }
 
+/* Transparent hit areas laid exactly over the plates drawn in the key
+   art (measured from the source image: left 32.92%, width 34.53%,
+   height 5.55%; each button carries its own --plate-top). */
 #title-buttons {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 18px;
+  position: absolute;
+  inset: 0;
 }
-#title-buttons button {
-  padding: 15px 34px;
-  font-size: 15px;
-  letter-spacing: 4px;
-  background: rgba(26,15,20,0.4);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
-  color: var(--gold-bright);
-  border-radius: 30px;
+.title-plate {
+  position: absolute;
+  left: 32.92%;
+  width: 34.53%;
+  top: var(--plate-top);
+  height: 5.55%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 5% / 38%;
   cursor: pointer;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
-  transition: background var(--dur-fast) ease, transform var(--dur-fast) var(--ease-glass),
-    box-shadow var(--dur-fast) ease, border-color var(--dur-fast) ease;
-  animation: titleBtnBreathe 4s ease-in-out infinite;
+  -webkit-tap-highlight-color: transparent;
+  transition: background var(--dur-fast) ease, box-shadow var(--dur-fast) ease,
+    transform var(--dur-fast) var(--ease-glass);
 }
-#title-buttons button:hover {
-  background: rgba(243,222,163,0.14);
-  border-color: var(--glass-border-strong);
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 14px 32px rgba(217,184,119,0.3), inset 0 1px 0 rgba(255,255,255,0.12);
+.title-plate:hover {
+  background: rgba(255, 240, 205, 0.34);
+  box-shadow: 0 0 0 1px rgba(196, 160, 88, 0.55), 0 6px 22px rgba(150, 118, 52, 0.28);
+  transform: scale(1.02);
 }
-#title-buttons button:active {
-  transform: translateY(-1px) scale(0.96);
+.title-plate:active { transform: scale(0.985); }
+.title-plate:focus-visible {
+  outline: 2px solid rgba(160, 125, 55, 0.9);
+  outline-offset: 2px;
 }
-@keyframes titleBtnBreathe {
-  0%, 100% { box-shadow: 0 8px 22px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08); }
-  50% { box-shadow: 0 8px 26px rgba(217,184,119,0.18), inset 0 1px 0 rgba(255,255,255,0.08); }
+/* 開始遊戲 gets a slow glow so the eye lands on it first. Box-shadow
+   only — an infinite transform here would fight the hover state. */
+#btn-new-game { animation: plateBreathe 3.6s ease-in-out infinite; }
+@keyframes plateBreathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(214, 176, 96, 0); }
+  50% { box-shadow: 0 0 26px 4px rgba(214, 176, 96, 0.3); }
 }
-#btn-new-game {
-  background: linear-gradient(180deg, var(--gold-bright), var(--gold));
-  color: #2c2008;
-  border-color: rgba(255,255,255,0.4);
-  font-weight: 700;
+/* 繼續遊戲 stays drawn in the art but is washed out until a save exists */
+.title-plate.is-locked {
+  cursor: default;
+  background: rgba(250, 247, 238, 0.58);
+  box-shadow: none;
+  animation: none;
 }
-#btn-new-game:hover { background: linear-gradient(180deg, #fbe9bf, var(--gold-bright)); }
-#btn-roster {
-  border-style: dashed;
-  font-size: 13px;
-  opacity: 0.9;
-}
+.title-plate.is-locked:hover { transform: none; box-shadow: none; background: rgba(250, 247, 238, 0.58); }
 .hidden { display: none !important; }
+
+/* ---------------------------------------------------------- */
+/* 設定 (settings panel)                                        */
+/* ---------------------------------------------------------- */
+
+#settings-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 115;
+  background: rgba(30, 22, 12, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+#settings-panel {
+  width: min(400px, 88vw);
+  background: linear-gradient(180deg, var(--ivory), var(--cream-gold) 140%);
+  border: 1px solid rgba(180, 140, 70, 0.45);
+  border-radius: 16px;
+  padding: 22px 26px 20px;
+  color: #4a3413;
+  font-family: var(--font-serif);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
+  animation: modalIn var(--dur-med) var(--ease-glass);
+}
+#settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px dashed rgba(138, 106, 46, 0.4);
+  padding-bottom: 12px;
+  margin-bottom: 6px;
+}
+#settings-header h2 {
+  margin: 0;
+  font-size: 17px;
+  letter-spacing: 6px;
+  color: #8a6a2e;
+}
+#settings-close {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(138, 106, 46, 0.4);
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+}
+#settings-close::before,
+#settings-close::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 1.5px;
+  background: #8a6a2e;
+}
+#settings-close::before { transform: translate(-50%, -50%) rotate(45deg); }
+#settings-close::after { transform: translate(-50%, -50%) rotate(-45deg); }
+#settings-close:hover { background: rgba(138, 106, 46, 0.1); }
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 2px;
+  border-bottom: 1px solid rgba(138, 106, 46, 0.18);
+}
+.settings-label { font-size: 15px; letter-spacing: 2px; }
+
+.settings-toggle {
+  width: 52px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(138, 106, 46, 0.45);
+  background: rgba(138, 106, 46, 0.16);
+  cursor: pointer;
+  position: relative;
+  transition: background var(--dur-fast) ease;
+}
+.settings-toggle span {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #b9a173;
+  transition: transform var(--dur-fast) var(--ease-glass), background var(--dur-fast) ease;
+}
+.settings-toggle[aria-pressed="true"] { background: rgba(160, 125, 55, 0.45); }
+.settings-toggle[aria-pressed="true"] span {
+  transform: translateX(24px);
+  background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+}
+
+.settings-action {
+  padding: 8px 18px;
+  font-size: 13px;
+  letter-spacing: 2px;
+  border-radius: 8px;
+  border: 1px solid rgba(168, 69, 47, 0.5);
+  background: transparent;
+  color: #a8452f;
+  cursor: pointer;
+  font-family: var(--font-serif);
+  transition: background var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+.settings-action:hover { background: rgba(168, 69, 47, 0.1); }
+.settings-action.confirming {
+  background: #a8452f;
+  color: var(--ivory);
+  border-color: #a8452f;
+}
+#settings-note {
+  margin: 12px 2px 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #8a7550;
+}
 
 /* ---------------------------------------------------------- */
 /* 神界部門名冊 (deity roster)                                  */

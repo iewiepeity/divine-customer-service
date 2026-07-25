@@ -37,8 +37,8 @@
       <div id="stage-portrait-img"></div>
     </div>
 
-    <!-- HUD -->
-    <div id="hud">
+    <!-- HUD (hidden on the title screen, where 設定 owns the sound toggle) -->
+    <div id="hud" class="hidden">
       <button id="mute-btn" title="靜音／取消靜音"></button>
       <div id="save-indicator">已自動儲存</div>
     </div>
@@ -97,19 +97,43 @@
       </div>
     </div>
 
-    <!-- Title Screen -->
+    <!-- Title Screen — the key art carries the logo and the button plates;
+         the buttons below are transparent hit areas aligned to the artwork. -->
     <div id="title-screen">
-      <div id="title-particles" aria-hidden="true">
-        <span class="mote"></span><span class="mote"></span><span class="mote"></span>
-        <span class="mote"></span><span class="mote"></span><span class="mote"></span>
-        <span class="mote"></span><span class="mote"></span>
+      <div id="title-backdrop" aria-hidden="true"></div>
+      <div id="title-art">
+        <div id="title-particles" aria-hidden="true">
+          <span class="mote"></span><span class="mote"></span><span class="mote"></span>
+          <span class="mote"></span><span class="mote"></span><span class="mote"></span>
+          <span class="mote"></span><span class="mote"></span>
+        </div>
+        <h1 id="title-logo">神明客服中心</h1>
+        <p id="title-sub">Divine Customer Service Center</p>
+        <div id="title-buttons">
+          <button id="btn-new-game" class="title-plate" style="--plate-top:56.50%" aria-label="開始遊戲"></button>
+          <button id="btn-continue" class="title-plate is-locked" style="--plate-top:63.27%" aria-label="繼續遊戲" disabled></button>
+          <button id="btn-roster" class="title-plate" style="--plate-top:69.97%" aria-label="神明名冊"></button>
+          <button id="btn-settings" class="title-plate" style="--plate-top:76.81%" aria-label="設定"></button>
+        </div>
       </div>
-      <h1 id="title-logo">神明客服中心</h1>
-      <p id="title-sub">Divine Customer Service Center</p>
-      <div id="title-buttons">
-        <button id="btn-new-game">開始遊戲</button>
-        <button id="btn-continue" class="hidden">繼續遊戲</button>
-        <button id="btn-roster">神界部門名冊</button>
+    </div>
+
+    <!-- 設定 (settings panel, opened from the title screen) -->
+    <div id="settings-screen" class="hidden">
+      <div id="settings-panel">
+        <div id="settings-header">
+          <h2>設定</h2>
+          <button id="settings-close" aria-label="關閉"></button>
+        </div>
+        <div class="settings-row">
+          <span class="settings-label">音效</span>
+          <button id="settings-sound" class="settings-toggle" aria-pressed="true"><span></span></button>
+        </div>
+        <div class="settings-row">
+          <span class="settings-label">遊戲進度</span>
+          <button id="settings-clear" class="settings-action">清除進度</button>
+        </div>
+        <p id="settings-note">清除後將無法使用「繼續遊戲」。</p>
       </div>
     </div>
 

@@ -54,7 +54,7 @@ function bootLoadingScreen() {
     loadingLine.textContent = "部分圖片載入失敗，仍可繼續遊戲。";
     setTimeout(finish, 500);
   };
-  coverImg.src = "assets/backgrounds/cover.jpg";
+  coverImg.src = "assets/backgrounds/title-cover.jpg";
   setTimeout(finish, TIMEOUT_MS);
 }
 
@@ -67,7 +67,13 @@ const titleScreen = document.getElementById("title-screen");
 const btnNew = document.getElementById("btn-new-game");
 const btnContinue = document.getElementById("btn-continue");
 const btnRoster = document.getElementById("btn-roster");
+const btnSettings = document.getElementById("btn-settings");
 const muteBtn = document.getElementById("mute-btn");
+
+const settingsScreen = document.getElementById("settings-screen");
+const settingsClose = document.getElementById("settings-close");
+const settingsSound = document.getElementById("settings-sound");
+const settingsClear = document.getElementById("settings-clear");
 
 const nicknameScreen = document.getElementById("nickname-screen");
 const nicknameInput = document.getElementById("nickname-input");
@@ -76,20 +82,70 @@ const nicknameConfirm = document.getElementById("nickname-confirm");
 
 btnRoster.addEventListener("click", () => roster.open(deities));
 
-muteBtn.classList.toggle("is-muted", audio.muted);
+// Sound state is shared between the HUD mute button and the settings
+// panel toggle, so flipping either one keeps both in sync.
+function syncSoundUi() {
+  muteBtn.classList.toggle("is-muted", audio.muted);
+  settingsSound.setAttribute("aria-pressed", audio.muted ? "false" : "true");
+}
+syncSoundUi();
+
 muteBtn.addEventListener("click", () => {
-  const muted = audio.toggleMute();
-  muteBtn.classList.toggle("is-muted", muted);
+  audio.toggleMute();
+  syncSoundUi();
 });
 
-if (saveManager.hasSave()) {
-  btnContinue.classList.remove("hidden");
+settingsSound.addEventListener("click", () => {
+  audio.toggleMute();
+  syncSoundUi();
+  audio.click();
+});
+
+// 繼續遊戲 is drawn into the key art, so it is unlocked rather than
+// revealed — it stays visible but inert until there is a save.
+function refreshContinueState() {
+  const has = saveManager.hasSave();
+  btnContinue.classList.toggle("is-locked", !has);
+  btnContinue.disabled = !has;
 }
+refreshContinueState();
+
+btnSettings.addEventListener("click", () => {
+  audio.click();
+  settingsClear.classList.remove("confirming");
+  settingsClear.textContent = "清除進度";
+  settingsScreen.classList.remove("hidden");
+});
+
+function closeSettings() {
+  audio.click();
+  settingsScreen.classList.add("hidden");
+}
+settingsClose.addEventListener("click", closeSettings);
+settingsScreen.addEventListener("click", (e) => {
+  if (e.target === settingsScreen) closeSettings();
+});
+
+// Two-step so a stray tap can never wipe a playthrough.
+settingsClear.addEventListener("click", () => {
+  audio.click();
+  if (!settingsClear.classList.contains("confirming")) {
+    settingsClear.classList.add("confirming");
+    settingsClear.textContent = "確定清除？";
+    return;
+  }
+  saveManager.clear();
+  refreshContinueState();
+  settingsClear.classList.remove("confirming");
+  settingsClear.textContent = "已清除";
+  setTimeout(() => { settingsClear.textContent = "清除進度"; }, 1400);
+});
 
 const game = new Game(openingScript);
 
 function launch(fromIndex) {
   titleScreen.classList.add("hidden");
+  document.getElementById("hud").classList.remove("hidden");
   audio.click();
   game.start(fromIndex);
 }
