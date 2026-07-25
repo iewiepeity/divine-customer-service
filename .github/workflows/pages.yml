@@ -24,6 +24,11 @@ concurrency:
 
 jobs:
   deploy:
+    # Only the default branch is allowed to deploy to the github-pages
+    # environment, so a push to any other branch skips cleanly instead of
+    # failing. Reading the default branch from the event means this keeps
+    # working if it is switched to main later.
+    if: github.ref_name == github.event.repository.default_branch
     runs-on: ubuntu-latest
     environment:
       name: github-pages
