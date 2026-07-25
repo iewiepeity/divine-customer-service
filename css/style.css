@@ -511,17 +511,22 @@ html, body {
   opacity: 0.28;
   border-color: var(--gold-bright);
 }
+/* Concentric with the ring above, so marking a hotspot as visited never
+   makes the marker jump to one side. It was previously offset by an `em`
+   amount resolved against the button's own font-size rather than the
+   icon's, which put it well off the anchor point. */
 .hotspot.visited::after {
   content: "";
   position: absolute;
-  top: calc(50% - 0.85em);
-  left: calc(50% + 0.55em);
-  width: 14px;
-  height: 14px;
+  top: 50%;
+  left: 50%;
+  width: 0.62em;
+  height: 0.62em;
+  transform: translate(-50%, -50%);
   border-radius: 50%;
   background: var(--gold-bright);
-  box-shadow: 0 0 8px rgba(243,222,163,0.7);
-  opacity: 0.85;
+  box-shadow: 0 0 10px rgba(243,222,163,0.75);
+  opacity: 0.9;
 }
 
 @keyframes hotspotBreathe {
@@ -1053,39 +1058,61 @@ html, body {
   justify-content: center;
 }
 #result-layer.hidden { display: none; }
+/* 神界案件處理回報單 — styled as a real filed document: ruled paper, a
+   red margin rule, corner brackets and a 神 watermark under the fields. */
 #result-card {
   position: relative;
   width: min(480px, 88vw);
   max-height: 86vh;
   overflow-y: auto;
-  background: linear-gradient(180deg, var(--ivory), var(--cream-gold) 140%);
+  background:
+    linear-gradient(90deg, transparent 0 30px, rgba(168, 69, 47, 0.22) 30px 31px, transparent 31px),
+    repeating-linear-gradient(180deg, rgba(180, 140, 70, 0.045) 0 29px, transparent 29px 30px),
+    linear-gradient(180deg, var(--ivory), var(--cream-gold) 140%);
   color: #4a3413;
-  border-radius: 10px;
-  border: 1px solid rgba(180,140,70,0.4);
-  padding: 28px 28px 24px;
-  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  border-radius: 3px;
+  border: 1px solid rgba(180, 140, 70, 0.45);
+  padding: 26px 26px 22px 40px;
+  font-family: var(--font-serif);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 0 5px rgba(30, 18, 10, 0.07);
   animation: resultSlideIn var(--dur-slow) var(--ease-glass);
 }
+#result-card::before,
+#result-card::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(180, 140, 70, 0.5);
+  pointer-events: none;
+}
+#result-card::before { top: 8px; left: 8px; border-right: none; border-bottom: none; }
+#result-card::after { bottom: 8px; right: 8px; border-left: none; border-top: none; }
 @keyframes resultSlideIn {
   from { opacity: 0; transform: translateY(60px) scale(0.96); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 #result-seal {
   position: absolute;
-  top: -18px;
-  right: 20px;
-  width: 64px;
-  height: 64px;
+  /* kept inside the card: it scrolls its own overflow, so a seal hung
+     over the top edge gets sliced off */
+  top: 10px;
+  right: 16px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
-  border: 3px solid #a8452f;
+  border: 2px solid #a8452f;
+  box-shadow: inset 0 0 0 3px rgba(168,69,47,0.9);
+  background: radial-gradient(circle, rgba(168,69,47,0.13) 0%, rgba(168,69,47,0.05) 70%);
   color: #a8452f;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-serif);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: 3px;
+  text-indent: 3px;
   transform: rotate(-14deg) scale(0);
   opacity: 0.85;
   animation: sealDrop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.28s forwards;
@@ -1096,20 +1123,48 @@ html, body {
   70% { opacity: 0.9; }
   100% { transform: rotate(-14deg) scale(1) translateY(0); opacity: 0.85; }
 }
-#result-kicker { font-size: 13px; letter-spacing: 3px; color: #8a6a2e; font-weight: 700; }
-#result-case-no { font-size: 12px; color: #7a5a3a; margin-top: 4px; font-variant-numeric: tabular-nums; }
+#result-header {
+  border-bottom: 3px double rgba(138, 106, 46, 0.45);
+  padding-bottom: 10px;
+  margin-bottom: 4px;
+}
+#result-kicker { font-size: 14px; letter-spacing: 5px; color: #8a6a2e; font-weight: 700; }
+#result-case-no {
+  font-size: 12px;
+  color: #7a5a3a;
+  margin-top: 5px;
+  letter-spacing: 1px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* watermark sitting under the filled-in rows */
+#result-fields { position: relative; }
+#result-fields::before {
+  content: "神";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(110px, 26vw, 160px);
+  color: rgba(138, 106, 46, 0.07);
+  pointer-events: none;
+  line-height: 1;
+}
 .result-field {
+  position: relative;
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
   gap: 12px;
-  padding: 9px 0;
-  border-bottom: 1px solid rgba(138,106,46,0.2);
+  padding: 9px 2px;
+  border-bottom: 1px dashed rgba(138,106,46,0.28);
   font-size: 14px;
   opacity: 0;
   transform: translateX(-6px);
   animation: fieldIn 0.4s ease forwards;
 }
-.result-key { opacity: 0.7; white-space: nowrap; }
+.result-key { color: #6b5228; white-space: nowrap; flex-shrink: 0; }
 .result-val { font-weight: 700; text-align: right; color: #a8452f; }
 #result-close {
   margin-top: 18px;

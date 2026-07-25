@@ -7,13 +7,39 @@
 
 const STORAGE_KEY = "dcsc_muted";
 
+// A moment of silence, played through a media element on the first user
+// gesture. iOS keeps WebAudio on the "ambient" session, which the ringer
+// switch silences outright — playing any media element first moves the
+// page onto the playback session so the synthesised SFX are audible.
+const SILENT_WAV = "data:audio/wav;base64,UklGRrQBAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YZABAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA";
+
 class AudioEngine {
   constructor() {
     this.ctx = null;
     this.muted = localStorage.getItem(STORAGE_KEY) === "1";
   }
 
+  /** iOS: hold an audio session open so the ringer switch doesn't mute us. */
+  _unlockMediaSession() {
+    if (this._unlocked) return;
+    this._unlocked = true;
+    try {
+      const el = document.createElement("audio");
+      el.setAttribute("playsinline", "");
+      el.preload = "auto";
+      el.loop = true;
+      el.volume = 0.001;
+      el.src = SILENT_WAV;
+      const played = el.play();
+      if (played && played.catch) played.catch(() => {});
+      this._silentEl = el;
+    } catch (e) {
+      /* nothing to do — the SFX just stay on the ambient session */
+    }
+  }
+
   _ensureCtx() {
+    this._unlockMediaSession();
     if (!this.ctx) {
       const AC = window.AudioContext || window.webkitAudioContext;
       this.ctx = new AC();
@@ -93,7 +119,7 @@ class AudioEngine {
     this._tone(600, 1.3, { type: "triangle", gain: 0.08, sweepTo: 1400, delay: 0.1 });
   }
 
-  typeTick() { this._tone(1800, 0.02, { type: "square", gain: 0.02 }); }
+  typeTick() { this._tone(1500, 0.035, { type: "triangle", gain: 0.055 }); }
 
   /** 玉石碰撞 — bright short glass/jade clink, used for confirmations */
   gemClink() {
