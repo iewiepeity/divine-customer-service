@@ -82,6 +82,10 @@ html, body {
   position: relative;
   width: 100vw;
   height: 100vh;
+  /* iOS Safari counts its own toolbar inside 100vh, which pushes the
+     bottom of the game — the dialogue box especially — behind the
+     address bar. dvh measures only what is actually on screen. */
+  height: 100dvh;
   overflow: hidden;
 }
 
@@ -782,7 +786,7 @@ html, body {
   .char-intro-quote { font-size: 13px; padding-top: 8px; }
   .char-intro-dots { display: none; }
   #explore-continue { padding: 9px 26px; font-size: 14px; }
-  #dialogue-box { min-height: 92px; padding: 14px 46px 18px 24px; bottom: 10px; }
+  #dialogue-box { min-height: 92px; padding: 14px 46px 18px 24px; bottom: max(10px, env(safe-area-inset-bottom, 0px)); }
   #dialogue-text { font-size: clamp(15px, 2vw, 18px); line-height: 1.6; min-height: 2.6em; }
 }
 
@@ -2529,7 +2533,7 @@ html, body {
 /* ---------------------------------------------------------- */
 
 @media (max-width: 640px) {
-  #dialogue-box { padding: 16px 18px 20px; bottom: 10px; width: 94vw; }
+  #dialogue-box { padding: 16px 18px 20px; bottom: max(16px, env(safe-area-inset-bottom, 0px)); width: 94vw; }
   #record-panel { padding: 20px; }
 }
 
