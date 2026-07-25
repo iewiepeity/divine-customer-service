@@ -203,7 +203,7 @@ export class Game {
       `<div class="record-object-img"></div>` +
       `<div class="record-object-label">${node.hotspot?.label ?? "卷宗"}</div>`;
     btn.addEventListener("click", () => {
-      recordPanel.open(node.title, node.fields, () => this.next());
+      recordPanel.open(node.title, node.fields, () => this.next(), { stamp: node.stamp });
     });
     layer.appendChild(btn);
   }

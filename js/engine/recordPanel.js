@@ -21,7 +21,11 @@ export class RecordPanel {
    * title: string
    * fields: [{label, value}]
    */
-  open(title, fields, onComplete) {
+  /**
+   * opts.stamp — verdict pressed onto the record once the last entry is
+   * filled in, before the player is allowed to close it.
+   */
+  open(title, fields, onComplete, opts = {}) {
     this.layer.innerHTML = "";
     const wrap = document.createElement("div");
     wrap.id = "record-wrap";
@@ -64,6 +68,22 @@ export class RecordPanel {
           btn.disabled = false;
           i += 1;
           btn.textContent = i >= fields.length ? "闔上卷宗" : "翻下一頁";
+          if (i >= fields.length && opts.stamp) {
+            // the verdict lands a beat after the last figure goes down
+            btn.disabled = true;
+            setTimeout(() => {
+              const seal = document.createElement("div");
+              seal.id = "record-stamp";
+              seal.textContent = opts.stamp;
+              page.appendChild(seal);
+              page.classList.add("jolt");
+              audio.bigStamp();
+              setTimeout(() => {
+                page.classList.remove("jolt");
+                btn.disabled = false;
+              }, 420);
+            }, 480);
+          }
         },
       });
     };

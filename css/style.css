@@ -951,6 +951,41 @@ html, body {
   padding: 0 5px;
 }
 
+/* 判定印 — slammed onto the finished record. Multiply blending makes the
+   ink sit in the paper rather than float above it. */
+#record-stamp {
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  padding: 8px 16px 10px;
+  border: 3px double #b5341f;
+  border-radius: 4px;
+  color: #b5341f;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: clamp(19px, 3.2vw, 38px);
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: multiply;
+  text-shadow: 0 0 2px rgba(181, 52, 31, 0.45);
+  box-shadow: inset 0 0 10px rgba(181, 52, 31, 0.18);
+  animation: stampSlam 0.46s cubic-bezier(0.2, 1.5, 0.4, 1) forwards;
+}
+@keyframes stampSlam {
+  0% { opacity: 0; transform: translate(-50%, -50%) rotate(-11deg) scale(2.9); }
+  55% { opacity: 0.96; transform: translate(-50%, -50%) rotate(-11deg) scale(0.93); }
+  100% { opacity: 0.92; transform: translate(-50%, -50%) rotate(-11deg) scale(1); }
+}
+#record-page.jolt { animation: recordJolt 0.34s ease; }
+@keyframes recordJolt {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-1px, 3px); }
+  55% { transform: translate(1px, -1px); }
+}
+
 #record-next {
   flex-shrink: 0;
   padding: 10px 30px;
@@ -991,6 +1026,9 @@ html, body {
   }
   #record-page h3 { font-size: 13px; }
   .record-field { font-size: 13px; padding: 8px 2px; }
+  /* the vw term is tiny on a narrow screen, so the stamp would shrink to
+     its floor; drop it below the figures too rather than across them */
+  #record-stamp { font-size: clamp(24px, 8.5vw, 36px); top: 66%; }
   .record-object-img { width: min(62vw, 300px); height: min(62vw, 300px); }
 }
 

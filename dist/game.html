@@ -959,6 +959,41 @@ html, body {
   padding: 0 5px;
 }
 
+/* 判定印 — slammed onto the finished record. Multiply blending makes the
+   ink sit in the paper rather than float above it. */
+#record-stamp {
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  padding: 8px 16px 10px;
+  border: 3px double #b5341f;
+  border-radius: 4px;
+  color: #b5341f;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: clamp(19px, 3.2vw, 38px);
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: multiply;
+  text-shadow: 0 0 2px rgba(181, 52, 31, 0.45);
+  box-shadow: inset 0 0 10px rgba(181, 52, 31, 0.18);
+  animation: stampSlam 0.46s cubic-bezier(0.2, 1.5, 0.4, 1) forwards;
+}
+@keyframes stampSlam {
+  0% { opacity: 0; transform: translate(-50%, -50%) rotate(-11deg) scale(2.9); }
+  55% { opacity: 0.96; transform: translate(-50%, -50%) rotate(-11deg) scale(0.93); }
+  100% { opacity: 0.92; transform: translate(-50%, -50%) rotate(-11deg) scale(1); }
+}
+#record-page.jolt { animation: recordJolt 0.34s ease; }
+@keyframes recordJolt {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-1px, 3px); }
+  55% { transform: translate(1px, -1px); }
+}
+
 #record-next {
   flex-shrink: 0;
   padding: 10px 30px;
@@ -999,6 +1034,9 @@ html, body {
   }
   #record-page h3 { font-size: 13px; }
   .record-field { font-size: 13px; padding: 8px 2px; }
+  /* the vw term is tiny on a narrow screen, so the stamp would shrink to
+     its floor; drop it below the figures too rather than across them */
+  #record-stamp { font-size: clamp(24px, 8.5vw, 36px); top: 66%; }
   .record-object-img { width: min(62vw, 300px); height: min(62vw, 300px); }
 }
 
@@ -2850,6 +2888,14 @@ class AudioEngine {
     this._noise(0.08, { gain: 0.13, filterFreq: 800, delay: 0.02 });
   }
 
+  /** The one that matters — a verdict being stamped onto the record. */
+  bigStamp() {
+    this._tone(58, 0.3, { type: "square", gain: 0.24 });
+    this._tone(150, 0.16, { type: "triangle", gain: 0.14 });
+    this._noise(0.16, { gain: 0.2, filterFreq: 520, delay: 0.01 });
+    this._noise(0.1, { gain: 0.1, filterFreq: 1600, delay: 0.03 });
+  }
+
   phoneRing() {
     for (let i = 0; i < 2; i++) {
       this._tone(1200, 0.18, { type: "square", gain: 0.1, delay: i * 0.24 });
@@ -3696,7 +3742,11 @@ class RecordPanel {
    * title: string
    * fields: [{label, value}]
    */
-  open(title, fields, onComplete) {
+  /**
+   * opts.stamp — verdict pressed onto the record once the last entry is
+   * filled in, before the player is allowed to close it.
+   */
+  open(title, fields, onComplete, opts = {}) {
     this.layer.innerHTML = "";
     const wrap = document.createElement("div");
     wrap.id = "record-wrap";
@@ -3739,6 +3789,22 @@ class RecordPanel {
           btn.disabled = false;
           i += 1;
           btn.textContent = i >= fields.length ? "闔上卷宗" : "翻下一頁";
+          if (i >= fields.length && opts.stamp) {
+            // the verdict lands a beat after the last figure goes down
+            btn.disabled = true;
+            setTimeout(() => {
+              const seal = document.createElement("div");
+              seal.id = "record-stamp";
+              seal.textContent = opts.stamp;
+              page.appendChild(seal);
+              page.classList.add("jolt");
+              audio.bigStamp();
+              setTimeout(() => {
+                page.classList.remove("jolt");
+                btn.disabled = false;
+              }, 420);
+            }, 480);
+          }
         },
       });
     };
@@ -4359,6 +4425,7 @@ const openingScript = [
     ],
     hotspot: { icon: "📜", label: "巨大卷宗", x: 50, y: 55 },
     title: "來電紀錄",
+    stamp: "奧客確認",
     fields: [
       { label: "姓名", value: "{nickname}" },
       { label: "祈願次數", value: "9,487 次" },
@@ -4821,7 +4888,7 @@ class Game {
       `<div class="record-object-img"></div>` +
       `<div class="record-object-label">${node.hotspot?.label ?? "卷宗"}</div>`;
     btn.addEventListener("click", () => {
-      recordPanel.open(node.title, node.fields, () => this.next());
+      recordPanel.open(node.title, node.fields, () => this.next(), { stamp: node.stamp });
     });
     layer.appendChild(btn);
   }

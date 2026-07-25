@@ -101,6 +101,14 @@ class AudioEngine {
     this._noise(0.08, { gain: 0.13, filterFreq: 800, delay: 0.02 });
   }
 
+  /** The one that matters — a verdict being stamped onto the record. */
+  bigStamp() {
+    this._tone(58, 0.3, { type: "square", gain: 0.24 });
+    this._tone(150, 0.16, { type: "triangle", gain: 0.14 });
+    this._noise(0.16, { gain: 0.2, filterFreq: 520, delay: 0.01 });
+    this._noise(0.1, { gain: 0.1, filterFreq: 1600, delay: 0.03 });
+  }
+
   phoneRing() {
     for (let i = 0; i < 2; i++) {
       this._tone(1200, 0.18, { type: "square", gain: 0.1, delay: i * 0.24 });

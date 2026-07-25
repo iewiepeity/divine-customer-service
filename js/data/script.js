@@ -143,6 +143,7 @@ export const openingScript = [
     ],
     hotspot: { icon: "📜", label: "巨大卷宗", x: 50, y: 55 },
     title: "來電紀錄",
+    stamp: "奧客確認",
     fields: [
       { label: "姓名", value: "{nickname}" },
       { label: "祈願次數", value: "9,487 次" },
