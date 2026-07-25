@@ -195,7 +195,7 @@ export class Game {
     document.getElementById("hud").classList.add("hidden");
     const el = document.getElementById("chapter-end");
     const titleEl = document.getElementById("chapter-end-title");
-    titleEl.textContent = interpolate((node && node.title) || "第一章・完");
+    titleEl.textContent = interpolate((node && node.title) || "序章・完");
     el.classList.remove("hidden");
     requestAnimationFrame(() => el.classList.add("show"));
     audio.stamp();

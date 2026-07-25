@@ -2019,7 +2019,7 @@ html, body {
 #loading-line { color: #cf9fc0; font-size: 13px; min-height: 1.4em; }
 
 /* ---------------------------------------------------------- */
-/* 第一章・完 (chapter end card, over the whiteout transition)  */
+/* 序章・完 (chapter end card, over the whiteout transition)  */
 /* ---------------------------------------------------------- */
 
 /* Shared ornament: a thin gold rule with a diamond at its centre */
@@ -2509,7 +2509,7 @@ html, body {
       <div id="loading-line"></div>
     </div>
 
-    <!-- 第一章・完 (chapter end card, shown over the whiteout transition) -->
+    <!-- 序章・完 (chapter end card, shown over the whiteout transition) -->
     <div id="chapter-end" class="hidden">
       <div id="chapter-end-glow" aria-hidden="true"></div>
       <div id="chapter-end-motes" aria-hidden="true">
@@ -2517,7 +2517,7 @@ html, body {
       </div>
       <div id="chapter-end-inner">
         <div id="chapter-end-seal"><span>終</span></div>
-        <div id="chapter-end-title">第一章・完</div>
+        <div id="chapter-end-title">序章・完</div>
         <div class="ending-rule" aria-hidden="true"><span></span><i></i><span></span></div>
         <div id="chapter-end-sub">神明客服中心</div>
         <div id="chapter-end-hint">點擊繼續</div>
@@ -4319,7 +4319,7 @@ const openingScript = [
   },
 
   // ---------------------------------------------------------
-  // 第一章結尾 — 電話又響，三人各說一句
+  // 序章結尾 — 電話又響，三人各說一句
   // ---------------------------------------------------------
   {
     scene: "Scene_10",
@@ -4336,14 +4336,14 @@ const openingScript = [
   },
 
   // ---------------------------------------------------------
-  // 第一章・完
+  // 序章・完
   // ---------------------------------------------------------
   {
     scene: "Scene_chapterEnd",
     type: "chapterEnd",
     background: "bg-office",
     transition: "whiteout",
-    title: "第一章・完",
+    title: "序章・完",
   },
 
   // ---------------------------------------------------------
@@ -4540,7 +4540,7 @@ class Game {
     document.getElementById("hud").classList.add("hidden");
     const el = document.getElementById("chapter-end");
     const titleEl = document.getElementById("chapter-end-title");
-    titleEl.textContent = interpolate((node && node.title) || "第一章・完");
+    titleEl.textContent = interpolate((node && node.title) || "序章・完");
     el.classList.remove("hidden");
     requestAnimationFrame(() => el.classList.add("show"));
     audio.stamp();
