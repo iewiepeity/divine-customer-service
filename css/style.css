@@ -603,6 +603,13 @@ html, body {
   border-radius: 14px;
   border: 1px solid var(--ui-border);
 }
+/* The HUD carries a save indicator as well as the mute button, so the
+   top-right block is wide enough to reach a centred badge on a narrow
+   screen — drop the badge below the whole top row there. */
+@media (max-width: 780px) {
+  .progress-badge { top: 62px; font-size: 12px; padding: 5px 14px; }
+}
+
 
 /* Character introduction screen (客服靈 gallery) */
 .char-intro {
