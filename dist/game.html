@@ -410,7 +410,16 @@ html, body {
     bottom: clamp(150px, 26vh, 240px);
     right: 2%;
   }
-  .office-spirit { width: min(30vw, 220px); }
+  /* The vw cap that keeps three of them in scale on a desktop crushes
+     them on a phone, where they also have to stand clear of the dialogue
+     box instead of hiding behind it. Spread wider too — the floor marks
+     they line up with on a wide screen are cropped away here anyway. */
+  .office-spirit {
+    height: min(34vh, calc(30vw * 4 / 3));
+    bottom: clamp(168px, 23vh, 235px);
+  }
+  .office-spirit-left { left: 17%; }
+  .office-spirit-right { left: 83%; }
 }
 /* Landscape phones: very little vertical room, so the stage art has to
    shrink rather than push off the top of the screen. */
@@ -420,7 +429,11 @@ html, body {
     height: min(62vh, 300px);
     bottom: clamp(96px, 26vh, 130px);
   }
-  .office-spirit { height: 56%; width: min(20vw, 160px); }
+  /* height alone — setting width as well would override the 3:4 lock */
+  .office-spirit {
+    height: min(54%, calc(19vw * 4 / 3));
+    bottom: clamp(96px, 28vh, 130px);
+  }
 }
 
 /* ---------------------------------------------------------- */
